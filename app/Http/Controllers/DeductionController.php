@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Deduction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DeductionController extends Controller
 {
@@ -14,7 +15,9 @@ class DeductionController extends Controller
      */
     public function index()
     {
-        //
+        $deduction = Deduction::all();
+
+        return view('admin.deduction.index');
     }
 
     /**
@@ -24,7 +27,7 @@ class DeductionController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.deduction.create');
     }
 
     /**
@@ -35,7 +38,32 @@ class DeductionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name'      => 'required',
+            'amount'    => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $request->ajax()
+                ? response()->json(['errors'  => $validator->errors()], 400)
+                : back()
+                    ->withInput()
+                    ->withErrors($validator->errors())
+                    ->with('error',"Gagal menyimpan data. Cek kembali data inputan Anda.");
+        }
+
+        $rupiah_string = $request->amount;
+        $amount_string = preg_replace("/[^0-9]/", "", $rupiah_string);
+        $amount = (int) $amount_string;
+
+        $dataArray = array(
+            'name'      => $request->name,
+            'amount'    => $amount
+        );
+
+        $data = Deduction::create($dataArray);
+
+        return redirect()->route('deduction.index')->with('success','Data Berhasil di Tambah');
     }
 
     /**
@@ -46,7 +74,7 @@ class DeductionController extends Controller
      */
     public function show(Deduction $deduction)
     {
-        //
+        return view('admin.deduction.show', compact('deduction'));
     }
 
     /**
@@ -57,7 +85,7 @@ class DeductionController extends Controller
      */
     public function edit(Deduction $deduction)
     {
-        //
+        return view('admin.deduction.edit', compact('deduction'));
     }
 
     /**
@@ -69,7 +97,32 @@ class DeductionController extends Controller
      */
     public function update(Request $request, Deduction $deduction)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name'      => 'required',
+            'amount'    => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $request->ajax()
+                ? response()->json(['errors'  => $validator->errors()], 400)
+                : back()
+                    ->withInput()
+                    ->withErrors($validator->errors())
+                    ->with('error',"Gagal menyimpan data. Cek kembali data inputan Anda.");
+        }
+
+        $rupiah_string = $request->amount;
+        $amount_string = preg_replace("/[^0-9]/", "", $rupiah_string);
+        $amount = (int) $amount_string;
+
+        $dataArray = array(
+            'name'      => $request->name,
+            'amount'    => $amount
+        );
+
+        $deduction->update($dataArray);
+
+        return redirect()->route('deduction.index')->with('success','Data Berhasil di Ubah');
     }
 
     /**
@@ -80,6 +133,24 @@ class DeductionController extends Controller
      */
     public function destroy(Deduction $deduction)
     {
-        //
+        $deduction->delete();
+
+        return redirect()->route('deduction')->with('error', 'Data Berhasil di Hapus');
+    }
+
+    public function isActive(Request $request, Deduction $deduction)
+    {
+        $deduction->is_active = $request->is_active;
+        $deduction->save();
+
+        return redirect()->route('deduction')->with('success', 'Data'.$deduction->name.'Berhasil di Aktifkan');
+    }
+    
+    public function isShown(Request $request, Deduction $deduction)
+    {
+        $deduction->is_shown = $request->is_shown;
+        $deduction->save();
+
+        return redirect()->route('deduction')->with('success', 'Data'.$deduction->name.'Berhasil di Tampilkan');
     }
 }
