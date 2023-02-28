@@ -35,11 +35,6 @@ class Employee extends Model
         return $this->hasMany(Employee::class);
     }
 
-    public function Salary()
-    {
-        return $this->hasMany(Salary::class);
-    }
-
     public function WarningLatter()
     {
         return $this->hasMany(WarningLatter::class);
@@ -58,15 +53,5 @@ class Employee extends Model
     public function Subordinate()
     {
         return $this->belongsTo(Employee::class, 'manager_id', 'id');
-    }
-
-    public function Deduction()
-    {
-        return $this->belongsToMany(Deduction::class, 'employee_deduction');
-    }
-
-    public function Allowance()
-    {
-        return $this->belongsToMany(Allowance::class, 'employee_allowance');
     }
 }
