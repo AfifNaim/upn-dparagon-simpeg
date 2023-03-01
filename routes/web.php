@@ -1,5 +1,15 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\HistoryPositionController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PaidLeaveController;
+use App\Http\Controllers\PositionController;
+use App\Http\Controllers\RuleController;
+use App\Http\Controllers\WarningLetterController;
+use App\Models\HistoryDivision;
 use Illuminate\Support\Facades\Route;
 
 use Illuminate\Support\Facades\Auth;
@@ -15,10 +25,20 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 Auth::routes();
-Route::get('/', function () {
-    return view('welcome');
-});
+
+Route::get('/', [HomeController::class, 'landingpage'])->name('landingpage');
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('home', [HomeController::class, 'index'])->name('home');
+
+    Route::resource('division', DivisionController::class);
+    Route::resource('position', PositionController::class);
+    Route::resource('rule', RuleController::class);
+    Route::resource('company', CompanyController::class);
+    Route::resource('division', DivisionController::class);
+    Route::resource('employee', EmployeeController::class);
+    Route::resource('paidleave', PaidLeaveController::class);
+    Route::resource('warningletter', WarningLetterController::class);
+    Route::resource('historyposition', HistoryPositionController::class);
+    Route::resource('historydivision', HistoryDivision::class);
 });

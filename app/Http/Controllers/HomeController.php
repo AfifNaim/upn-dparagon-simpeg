@@ -6,23 +6,37 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
+    public function landingpage()
+    {
+        return view('landingpage');
+    }
+    
     public function index()
     {
-        return view('home');
+        if (auth()->user()->role == 'Admin')
+            return self::dashboardAdmin();
+        elseif (auth()->user()->role == 'HRD')
+            return self::dashboardHRD();
+        elseif (auth()->user()->role == 'Staff')
+            return self::dashboardStaff();
+        else
+            abort(403);
     }
+
+    public function dashboardAdmin()
+    {
+        return view('dashboard.admin');
+    }
+
+    public function dashboardHRD()
+    {
+        return view('dashboard.admin');
+    }
+
+    public function dashboardStaff()
+    {
+        return view('dashboard.admin');
+    }
+
 }

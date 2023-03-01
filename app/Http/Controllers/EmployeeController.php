@@ -182,7 +182,7 @@ class EmployeeController extends Controller
         $division   = Division::pluck('nm_divisi', 'id');
         $manager    = Employee::pluck('nama', 'id');
 
-        return view('admin.employee.edit', compact('employee','position','division'))
+        return view('admin.employee.edit', compact('employee','position','division'));
     }
 
     /**
