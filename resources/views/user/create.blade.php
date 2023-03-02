@@ -62,16 +62,16 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="text-capitalize">Jenis Kelamin</label>
-                                    <select class="form-control" name="gender" id="gender">
-                                        <option>----PILIH----</option>
+                                    <select class="form-control select2" name="gender" id="gender">
+                                        <option value="">----PILIH----</option>
                                         <option value="Laki-laki">Laki-laki</option>
                                         <option value="Perempuan">Perempuan</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label class="text-capitalize">Agama</label>
-                                    <select class="form-control" name="religion" id="religion">
-                                        <option>----PILIH----</option>
+                                    <select class="form-control select2" name="religion" id="religion">
+                                        <option value="">----PILIH----</option>
                                         <option value="Islam">Islam</option>
                                         <option value="Khatolik">Khatolik</option>
                                         <option value="Kristen">Kristen</option>
@@ -110,8 +110,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="text-capitalize">Status</label>
-                                    <select class="form-control" name="status" id="status">
-                                        <option>----PILIH----</option>
+                                    <select class="form-control select2 " name="status" id="status">
+                                        <option value="">----PILIH----</option>
                                         <option value="Lajang">Lajang</option>
                                         <option value="Kawin">Kawin</option>
                                     </select>
@@ -132,8 +132,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="text-capitalize">Jabatan</label>
-                                    <select class="form-control" name="position_id" id="position_id">
-                                        <option>----PILIH----</option>
+                                    <select class="form-control select2" name="position_id" id="position_id">
+                                        <option value="">----PILIH----</option>
                                         @foreach ($position as $positions)
                                             <option value="{{ $positions->id }}">{{ $positions->name }}</option>
                                         @endforeach
@@ -141,8 +141,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="text-capitalize">Divisi</label>
-                                    <select class="form-control" name="division_id" id="division_id">
-                                        <option>----PILIH----</option>
+                                    <select class="form-control select2" name="division_id" id="division_id">
+                                        <option value="">----PILIH----</option>
                                         @foreach ($division as $divisions)
                                             <option value="{{ $divisions->id }}">{{ $divisions->name }}</option>
                                         @endforeach
@@ -157,18 +157,15 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Foto</label>
-                                    <input type="file" class="form-control" name="image" id="image" accept=".jpeg, .jpg, .png">
-                                    @error('image')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <input class="form-control" type="file" name="image" id="image" accept=".jpeg, .jpg, .png">
                                 </div>
                                 <div class="form-group">
                                     <label class="text-capitalize">Role</label>
-                                    <select class="form-control" name="role" id="role">
-                                        <option value="Staff">----PILIH----</option>
-                                        <option value="Admin">Admin</option>
-                                        <option value="HRD">HRD</option>
+                                    <select class="form-control select2" name="role" id="role">
+                                        <option value="">----PILIH----</option>
                                         <option value="Staff">Staff</option>
+                                        <option value="HRD">HRD</option>
+                                        <option value="Admin">Admin</option>
                                     </select>
                                 </div>
                                 <input type="submit" value="Save" class="btn note-btn btn-info btn-lg">
