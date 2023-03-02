@@ -23,9 +23,9 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employee = Employee::all();
+        $employee = User::all();
 
-        return view('admin.employee.index', compact('employee'));
+        return view('user.index', compact('employee'));
     }
 
     /**
@@ -37,9 +37,8 @@ class EmployeeController extends Controller
     {
         $position       = Position::pluck('name', 'id');
         $division       = Division::pluck('name', 'id');
-        $employee       = Employee::pluck('name', 'id');
 
-        return view('admin.pegawai.create', compact('position','division','employee'));
+        return view('user.create', compact('position','division'));
     }
 
     /**
@@ -49,11 +48,12 @@ class EmployeeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   dd($request);
         $validator = Validator::make($request->all(), [
             'role'              => 'required',
-            'nik'               => 'required',
-            'name'              => 'required',
+            'email'             => 'required|unique:users,email',
+            'nik'               => 'required|unique:employees,nik',
+            'name'              => 'required|unique:users,name',
             'gender'            => 'required',
             'religion'          => 'required',
             'birth_place'       => 'required',
@@ -61,12 +61,12 @@ class EmployeeController extends Controller
             'address'           => 'required',
             'residence_address' => 'required',
             'status'            => 'required',
-            'child'             => 'required',
+            'child'             => 'nullable',
             'phone'             => 'required',
             'position_id'       => 'required',
             'division_id'       => 'required',
             'date_in'           => 'required',
-            'image'             => 'required|mimes:jpeg,png,jpg,gif,svg|file|max:5000'
+            'image'             => 'required|mimes:jpeg,png,jpg|file|max:5000'
         ]);
 
         if ($validator->fails()) {
@@ -182,7 +182,7 @@ class EmployeeController extends Controller
         $division   = Division::pluck('nm_divisi', 'id');
         $manager    = Employee::pluck('nama', 'id');
 
-        return view('admin.employee.edit', compact('employee','position','division'))
+        return view('admin.employee.edit', compact('employee','position','division'));
     }
 
     /**
