@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use App\Models\HistoryPosition;
+use App\Models\Position;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class HistoryPositionController extends Controller
 {
@@ -14,7 +17,9 @@ class HistoryPositionController extends Controller
      */
     public function index()
     {
-        //
+        $employee = Employee::all();
+
+        return view('admin.historyPosition.index', with('employee'));
     }
 
     /**
@@ -27,6 +32,13 @@ class HistoryPositionController extends Controller
         //
     }
 
+    public function createData(Employee $employee)
+    {
+        $position     = Position::pluck('name', 'id');
+
+        return view('admin.historyposition.create', compact('employee','position'));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -35,7 +47,30 @@ class HistoryPositionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'position_id'   => 'required',
+            'date_start'    => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $request->ajax()
+                ? response()->json(['errors'  => $validator->errors()], 400)
+                : back()
+                    ->withInput()
+                    ->withErrors($validator->errors())
+                    ->with('error',"Gagal menyimpan data. Cek kembali data inputan Anda.");
+        }
+
+        $dataArray = array(
+            'position_id'   => $request->position_id,
+            'employee_id'   => $request->employee_id,
+            'date_start'    => $request->date_start
+        );
+
+        $data = HistoryPosition::create($dataArray);
+
+        return redirect()->route('historyposition.index')->with('success','Data Berhasil di Tambah');
+
     }
 
     /**
@@ -49,6 +84,13 @@ class HistoryPositionController extends Controller
         //
     }
 
+    public function showData(Employee $employee)
+    {
+        $employee->with('HistoryPosition')->get();
+
+        return view('admin.historyposition.show', compact('employee'));
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -57,7 +99,7 @@ class HistoryPositionController extends Controller
      */
     public function edit(HistoryPosition $historyPosition)
     {
-        //
+        return view('admin.historyposition.index', compact('historyPosition'));
     }
 
     /**
@@ -69,7 +111,29 @@ class HistoryPositionController extends Controller
      */
     public function update(Request $request, HistoryPosition $historyPosition)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'position_id'   => 'required',
+            'date_start'    => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $request->ajax()
+                ? response()->json(['errors'  => $validator->errors()], 400)
+                : back()
+                    ->withInput()
+                    ->withErrors($validator->errors())
+                    ->with('error',"Gagal menyimpan data. Cek kembali data inputan Anda.");
+        }
+
+        $dataArray = array(
+            'position_id'   => $request->position_id,
+            'employee_id'   => $request->employee_id,
+            'date_start'    => $request->date_start
+        );
+
+        $historyPosition->update($dataArray);
+
+        return redirect()->route('historyposition.index')->with('success','Data Berhasil di Ubah');
     }
 
     /**
@@ -80,6 +144,9 @@ class HistoryPositionController extends Controller
      */
     public function destroy(HistoryPosition $historyPosition)
     {
-        //
+        $historyPosition->delete();
+        $data = $historyPosition->employee_id;
+
+        return redirect()->route('historyposition.show', $data)->with('error','Data Berhasil di Hapus');
     }
 }
