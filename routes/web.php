@@ -10,6 +10,9 @@ use App\Http\Controllers\PaidLeaveController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RuleController;
 use App\Http\Controllers\WarningLetterController;
+use App\Models\Employee;
+use App\Models\Rule;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 use Illuminate\Support\Facades\Auth;
@@ -31,6 +34,7 @@ Route::get('/', [HomeController::class, 'landingpage'])->name('landingpage');
 Route::group(['middleware' => ['auth']], function () {
     Route::get('home', [HomeController::class, 'index'])->name('home');
 
+    Route::resource('employee', EmployeeController::class);
     Route::resource('division', DivisionController::class);
     Route::resource('position', PositionController::class);
     Route::resource('rule', RuleController::class);
