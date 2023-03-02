@@ -55,7 +55,6 @@
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             <td>{{ @$user->Employee->nik }}</td>
-                                            <td>{{ $user->nik }}</td>
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->role }}</td>

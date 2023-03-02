@@ -10,7 +10,7 @@ class Employee extends Model
     use HasFactory;
 
     protected $guarded = [
-        'id'
+
     ];
 
     protected $dates = ['deleted_at'];

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
+
 use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
@@ -83,8 +84,8 @@ class EmployeeController extends Controller
 
         $extension          = $request->file('image')->extension();
         $imgname            = $request->nik . '_' . date('dmyHi') . '.' . $extension;
-        $path               = Storage::putFileAs('public/images', $request->file('imgupload'), $imgname);
-        $id                 = IdGenerator::generate(['table' => 'employee', 'length' => 8, 'prefix' => date('ym')]);
+        $path               = Storage::putFileAs('public/images', $request->file('image'), $imgname);
+        $id                 = IdGenerator::generate(['table' => 'employees', 'length' => 8, 'prefix' => date('ym')]);
         $password           = bcrypt("$request->nik");
         $historyPosition    = HistoryPosition::where('employee_id', $id)
             ->where('position_id', $request->position_id)
@@ -280,7 +281,7 @@ class EmployeeController extends Controller
                     if ($historyDivision == 0) {
 
                         HistoryPosition::create([
-                            'employee_id'   => $emplotee->id,
+                            'employee_id'   => $employee->id,
                             'division_id'   => $request->division_id,
                             'date_start'    => date("Y-m-d"),
                         ]);
@@ -356,7 +357,7 @@ class EmployeeController extends Controller
                     if ($historyDivision == 0) {
 
                         HistoryPosition::create([
-                            'employee_id'   => $emplotee->id,
+                            'employee_id'   => $employee->id,
                             'division_id'   => $request->division_id,
                             'date_start'    => date("Y-m-d"),
                         ]);
@@ -396,14 +397,14 @@ class EmployeeController extends Controller
 
     public function restore(Employee $employee)
     {
-        $pegawai->restore();
+        $employee->restore();
 
         return redirect()->route('admin.employee.trash')->with('success', 'Data Berhasil di Ubah');
     }
 
     public function destroyPermanent(Employee $employee)
     {
-        $pegawai->forceDelete();
+        $employee->forceDelete();
 
         return redirect()->route('admin.employee.trash')->with('error', 'Data Berhasil di Hapus');
     }

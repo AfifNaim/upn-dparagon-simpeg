@@ -19,7 +19,7 @@ class CompanyController extends Controller
     {
         $company = Company::orderBy('id')->first();
 
-        return view('admin.company.edit', compact('company'));
+        return view('company', compact('company'));
     }
 
     /**
