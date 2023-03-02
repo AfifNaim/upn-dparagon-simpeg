@@ -17,13 +17,13 @@ class CreateEmployeesTable extends Migration
             $table->id();
             $table->string('nik')->unique();
             $table->string('name');
-            $table->enum('gender', ['Male', 'Female']);
+            $table->enum('gender', ['Laki-laki', 'Perempuan']);
             $table->string('religion');
             $table->string('birth_place');
             $table->date('birth_date');
             $table->string('address');
             $table->string('residence_address');
-            $table->enum('status', ['married', 'single']);
+            $table->enum('status', ['Lajang', 'Kawin']);
             $table->integer('child');
             $table->string('phone');
             $table->date('date_in');

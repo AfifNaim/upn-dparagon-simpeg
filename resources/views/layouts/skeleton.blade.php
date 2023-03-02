@@ -21,6 +21,9 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugin/summernote/dist/summernote-bs5.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugin/selectric/public/selectric.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugin/select2/dist/css/select2.min.css') }}">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
 </head>
 
@@ -39,6 +42,9 @@
   <!-- Template JS File -->
   <script src="{{ asset('assets/js/scripts.js') }}"></script>
   <script src="{{ asset('assets/js/custom.js') }}"></script>
+  <script src="{{ asset('plugin/summernote/dist/summernote-bs5.js') }}"></script>
+  {{-- <script src="{{ asset('plugin/select2/dist/js/select2.full.min.js') }}"></script> --}}
+
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
