@@ -14,7 +14,7 @@ class AddEmployeeIdToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('employee_id')->unique();
+            $table->unsignedBigInteger('employee_id')->unique()->nullable();
         });
     }
 
