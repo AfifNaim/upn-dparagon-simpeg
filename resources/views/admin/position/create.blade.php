@@ -47,9 +47,16 @@
                                     <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
+                                <div class="form-group">
+                                    <label>Gaji</label>
+                                    <input type="number" class="form-control  @error('salary') is-invalid @enderror" name="salary" value="{{ old('salary') }}">
+                                    @error('salary')
+                                    <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
                                 
                                 <input type="submit" value="Save" class="btn note-btn btn-info btn-lg">
-                                <a href="{{ route('division.index') }}" class="btn btn-secondary">Back</a>
+                                <a href="{{ route('position.index') }}" class="btn btn-secondary">Back</a>
                             </form>
                         </div>
                     </div>

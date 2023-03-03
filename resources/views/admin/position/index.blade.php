@@ -56,10 +56,9 @@
                                             <td>{{ $user->salary }}</td>
                                             <td style="text-align: right">
                                             <form action="{{ route('position.destroy',$user->id) }}" method="POST">
-                                                <a href="{{ route('position.destroy', $user->id) }}"
+                                                <a href="{{ route('position.edit', $user->id) }}"
                                                     class="btn btn-primary btn-sm">Edit</a>
-                                                <a href="{{ route('position.destroy', $user->id) }}"
-                                                    class="btn btn-success btn-sm">Show</a>
+                                                
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm"

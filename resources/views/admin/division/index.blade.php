@@ -55,10 +55,9 @@
                              
                                             <td style="text-align: right">
                                             <form action="{{ route('division.destroy',$user->id) }}" method="POST">
-                                                <a href="{{ route('division.destroy', $user->id) }}"
+                                                <a href="{{ route('division.edit', $user->id) }}"
                                                     class="btn btn-primary btn-sm">Edit</a>
-                                                <a href="{{ route('division.destroy', $user->id) }}"
-                                                    class="btn btn-success btn-sm">Show</a>
+                                                
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm"
