@@ -15,9 +15,9 @@ class DivisionController extends Controller
      */
     public function index()
     {
-        $divisi = Division::all();
+        $division = Division::all();
 
-        return view('admin.divisi.index', compact('divisi'));
+        return view('admin.division.index', compact('division'));
     }
 
     /**
@@ -27,7 +27,7 @@ class DivisionController extends Controller
      */
     public function create()
     {
-        return view('admin.divisi.create');
+        return view('admin.division.create');
     }
 
     /**
