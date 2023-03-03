@@ -15,6 +15,11 @@ class Employee extends Model
 
     protected $dates = ['deleted_at'];
 
+    public function User()
+    {
+        return $this->hasOne(User::class);
+    }   
+
     public function PaidLeave()
     {
         return $this->hasMany(PaidLeave::class);
@@ -42,7 +47,7 @@ class Employee extends Model
 
     public function Position()
     {
-        return $this->belongsTo(Position::class, 'pisition_id', 'id');
+        return $this->belongsTo(Position::class, 'position_id', 'id');
     }
 
     public function Division()

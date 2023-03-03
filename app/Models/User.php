@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'employee_id'
     ];
 
     /**
@@ -45,6 +46,6 @@ class User extends Authenticatable
     
     public function Employee()
     {
-        return $this->hasOne(Employee::class,'id','employee_id');
+        return $this->belongsTo(Employee::class,'employee_id','id');
     }
 }

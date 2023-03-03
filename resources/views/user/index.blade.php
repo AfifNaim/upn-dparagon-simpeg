@@ -60,10 +60,8 @@
                                             <td>{{ $user->role }}</td>
                                             <td style="text-align: right">
                                             <form action="{{ route('employee.destroy',$user->id) }}" method="POST">
-                                                <a href="{{ route('employee.destroy', $user->id) }}"
-                                                    class="btn btn-primary btn-sm">Edit</a>
-                                                <a href="{{ route('employee.destroy', $user->id) }}"
-                                                    class="btn btn-success btn-sm">Show</a>
+                                                <a href="{{ route('employee.edit', $user->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                                <a href="{{ route('employee.show', $user->id) }}" class="btn btn-success btn-sm">Show</a>
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm"
