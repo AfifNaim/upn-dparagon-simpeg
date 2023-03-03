@@ -36,8 +36,8 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        $position       = Position::pluck('name', 'id');
-        $division       = Division::pluck('name', 'id');
+        $position       = Position::all();
+        $division       = Division::all();
 
         return view('user.create', compact('position','division'));
     }
@@ -49,7 +49,7 @@ class EmployeeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   dd($request);
+    {   
         $validator = Validator::make($request->all(), [
             'role'              => 'required',
             'email'             => 'required|unique:users,email',
@@ -120,7 +120,8 @@ class EmployeeController extends Controller
             'email'            => $request->email,
             'name'             => $request->name,
             'password'         => $password,
-            'role'             => $request->role
+            'role'             => $request->role,
+            'employee_id'      => $id
         );
 
         $user = User::create($userArray);
@@ -130,7 +131,7 @@ class EmployeeController extends Controller
             HistoryPosition::create([
                 'employee_id'   => $id,
                 'position_id'   => $request->position_id,
-                'date_start'    => $request->date_start
+                'date_start'    => $request->date_in
             ]);
         }
         if ($historyPosition == 0) {
@@ -138,17 +139,17 @@ class EmployeeController extends Controller
             HistoryDivision::create([
                 'employee_id'   => $id,
                 'division_id'   => $request->position_id,
-                'date_start'    => $request->date_start,
+                'date_start'    => $request->date_in,
             ]);
         }
 
         DB::commit();
-        return redirect()->route('admin.employee.index')->with('success', 'Data Berhasil di Tambah');
+        return redirect()->route('employee.index')->with('success', 'Data Berhasil di Tambah');
     
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
-            return redirect()->route('admin.employee.index')->with('error', 'Data Gagal di Tambah');
+            return redirect()->route('employee.index')->with('error', 'Data Gagal di Tambah');
         }
     }
 
@@ -158,17 +159,16 @@ class EmployeeController extends Controller
      * @param  \App\Models\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function show(Employee $employee)
-    {
-
-        $historyPosition = HistoryPosition::where('id_pegawai', $employee->id)
+    public function show(User $employee)
+    {   
+        $historyPosition = HistoryPosition::where('employee_id', $employee->employee_id)
             ->orderBy('id')
             ->get();
-        $historyDivision = HistoryDivision::where('id_pegawai', $employee->id)
+        $historyDivision = HistoryDivision::where('employee_id', $employee->employee_id)
             ->orderBy('id')
             ->get();
 
-        return view('admin.employee.show', compact('employee','historyPosition','historyDivision'));
+        return view('user.show', compact('employee','historyPosition','historyDivision'));
     }
 
     /**
@@ -179,9 +179,9 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        $position   = Position::pluck('nm_jabatan', 'id');
-        $division   = Division::pluck('nm_divisi', 'id');
-        $manager    = Employee::pluck('nama', 'id');
+        $position   = Position::all();
+        $division   = Division::all();
+        $manager    = Employee::all();
 
         return view('admin.employee.edit', compact('employee','position','division'));
     }

@@ -34,34 +34,31 @@
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('employee.create') }}" class="btn note-btn btn-success">Tambah User</a>
+                            <a href="{{ route('division.create') }}" class="btn note-btn btn-success">Tambah User</a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-md" id="data_table">
                                     <thead class="table-light">
                                         <td>No</td>
-                                        <td>NIK</td>
-                                        <td>Nama</td>
-                                        <td>Email</td>
-                                        <td>Role</td>
+                                        <td>Divisi</td>
                                         <td style="text-align: right">Action</td>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $i = 0;
                                         ?>
-                                        @foreach ($employee as $user)
+                                        @foreach ($division as $user)
                                         <tr>
                                             <td>{{ ++$i }}</td>
-                                            <td>{{ @$user->Employee->nik }}</td>
                                             <td>{{ $user->name }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>{{ $user->role }}</td>
+                             
                                             <td style="text-align: right">
-                                            <form action="{{ route('employee.destroy',$user->id) }}" method="POST">
-                                                <a href="{{ route('employee.edit', $user->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                                <a href="{{ route('employee.show', $user->id) }}" class="btn btn-success btn-sm">Show</a>
+                                            <form action="{{ route('division.destroy',$user->id) }}" method="POST">
+                                                <a href="{{ route('division.destroy', $user->id) }}"
+                                                    class="btn btn-primary btn-sm">Edit</a>
+                                                <a href="{{ route('division.destroy', $user->id) }}"
+                                                    class="btn btn-success btn-sm">Show</a>
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm"

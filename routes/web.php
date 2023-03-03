@@ -10,9 +10,6 @@ use App\Http\Controllers\PaidLeaveController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RuleController;
 use App\Http\Controllers\WarningLetterController;
-use App\Models\Employee;
-use App\Models\Rule;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +36,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('position', PositionController::class);
     Route::resource('rule', RuleController::class);
     Route::resource('company', CompanyController::class);
-    Route::resource('employee', EmployeeController::class);
     Route::resource('paidleave', PaidLeaveController::class);
     Route::resource('warningletter', WarningLetterController::class);
     Route::resource('historyposition', HistoryPositionController::class);
