@@ -85,7 +85,7 @@ class PositionController extends Controller
      */
     public function edit(Position $position)
     {
-        return view('admin.position.create', compact('position'));
+        return view('admin.position.edit', compact('position'));
     }
 
     /**
