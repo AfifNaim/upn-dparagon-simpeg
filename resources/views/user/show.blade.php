@@ -30,16 +30,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-flat">
-                    <div class="panel-body">
-                        <div class="text-center">
-                            @php $path =Storage::url('images/'.$employee->image); @endphp
-                            <img src="{{ url($path) }}"
-                                onerror="this.onerror=null; this.src='{{ URL::to('/images/brands/user.jpeg') }}'"
-                                alt="Foto Profil" width="160">
-                        </div>
-                    </div>
-                </div>
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-body">
@@ -102,10 +92,6 @@
                             <div class="form-group">
                                 <label>Tanggal Masuk</label>
                                 <input type="date" class="form-control" name="date_in" value="{{ @$employee->Employee->date_in }}"readonly>
-                            </div>
-                            <div class="form-group">
-                                <label>Foto</label>
-                                <img src="{{ asset('images/js/custom.js') }}" width="500px">
                             </div>
                             <div class="form-group">
                                 <label class="text-capitalize">Role</label>

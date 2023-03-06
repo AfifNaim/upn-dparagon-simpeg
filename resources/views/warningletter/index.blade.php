@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Pengajuan Pegawai')
+@section('tittle', 'Surat Peringatan')
 
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h1>Master Data Pegawai</h1>
+            <h1>Master Data Surat Peringatan</h1>
         </div>
 
         <div class="section-body">
@@ -24,7 +24,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            Halaman ini adalah menu Master Pegawai
+                            Halaman ini adalah menu Surat Peringatan
                         </div>
                     </div>
                 </div>
@@ -32,52 +32,47 @@
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('employee.create') }}" class="btn note-btn btn-success">Tambah User</a>
+                            <a href="{{ route('warningletter.create') }}" class="btn note-btn btn-success">Tambah Surat Peringatan</a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-md" id="data_table">
                                     <thead class="table-light">
                                         <td>No</td>
-                                        <td>NIK</td>
-                                        <td>Nama</td>
-                                        <td>Email</td>
-                                        <td>Role</td>
+                                        <td>Info Surat Peringatan</td>
+                                        <td>Pelanggaran</td>
                                         <td style="text-align: right">Action</td>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $i = 0;
                                         ?>
-                                        @foreach ($user as $user)
+                                        @foreach ($warningLatter as $data)
                                         <tr>
                                             <td>{{ ++$i }}</td>
-                                            <td><b>{{ $user->id }}</b></span>
+                                            <td>
+                                                {{ $data->Employee->name }}
                                                 <br>
-                                                <span class="label bg-danger">{{ $user->role }}</span>
+                                                {{ 'Dibuat : ' . date('d F Y', strtotime($data->date)) }}
                                                 <br>
-                                                {{ $user->name }}
-                                                <br>
-                                                <span class="label bg-warning">{{ $user->Division->name }}</span>
-                                                <span class="label bg-teal">
-        
-                                                    @if ($user->position_id == null)
-                                                        <b>Belum Ada Jabatan</b>
-                                                    @else
-                                                        {{ $user->Position->name }}
-                                                    @endif
-        
-                                                </span>
-                                                <br>
-                                                {{ $user->email . ' / ' . $user->name }}
+                                                {{ 'Tingkat : SP-' . $data->level }}
                                             </td>
-                                            <td>{{ $user->name }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>{{ $user->role }}</td>
+                                            <td class="text-center" hidden></td>
+                                            <td>
+                                                <ul>
+                                                    @if ($data->level != 'III')
+                                                        @foreach ($data->warning as $item)
+                                                            <li>{{ $item }}</li>
+                                                        @endforeach
+                                                    @else
+                                                        <li>-</li>
+                                                    @endif
+                                                </ul>
+                                            </td>
                                             <td style="text-align: right">
-                                            <form action="{{ route('employee.destroy',$user->id) }}" method="POST">
-                                                <a href="{{ route('employee.edit', $user->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                                <a href="{{ route('employee.show', $user->id) }}" class="btn btn-success btn-sm">Show</a>
+                                            <form action="{{ route('warningletter.destroy',$data->id) }}" method="POST">
+                                                <a href="{{ route('warningletter.edit', $data->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                                <a href="{{ route('warningletter.show', $data->id) }}" class="btn btn-success btn-sm">Show</a>
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm"

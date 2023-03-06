@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\WarningLetter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use PDF;
 
 class WarningLetterController extends Controller
@@ -22,7 +23,7 @@ class WarningLetterController extends Controller
         $to             = date("Y-12-31");
         $warningLatter  = WarningLetter::orderBy('id', 'desc')->get();
 
-        return view('admin.warningletter.index', compact('from','to','warningLatter'));
+        return view('warningletter.index', compact('from','to','warningLatter'));
     }
 
     public function searchLatter(Request $request)
@@ -31,7 +32,7 @@ class WarningLetterController extends Controller
         $to                 = $request->ke;
         $warningLatter      = WarningLetter::orderBy('id', 'desc')->get();
 
-        return view('admin.warningletter.index', compact('from','to','warningLatter'));
+        return view('warningletter.index', compact('from','to','warningLatter'));
     }
 
     /**
@@ -41,9 +42,9 @@ class WarningLetterController extends Controller
      */
     public function create()
     {
-        $employee = Employee::pluck('name','id');
+        $employee = Employee::all();
         
-        return view('admin.warningletter.index', compact('employee'));
+        return view('warningletter.create', compact('employee'));
     }
 
     /**
@@ -87,6 +88,7 @@ class WarningLetterController extends Controller
 
         $dataArray = array(
             'employee_id'   => $request->employee_id,
+            'date'          => date('Y-m-d'),
             'warning'       => $request->warning,
             'level'         => $request->level
         );
@@ -99,10 +101,11 @@ class WarningLetterController extends Controller
         $lastIncreament = substr($data->id, -3);
         $letter_id      = str_pad($lastIncreament, 3, 0, STR_PAD_LEFT);
         $company        = Company::orderBy('id', 'desc')->first();
+        $warning        = $request->warning;
 
         $letter = [
             'employee'  => $employee,
-            'warning'   => $data->warning,
+            'warning'   => $warning,
             'date'      => date('Y-m-d'),
             'month'     => $month,
             'year'      => $year,
@@ -111,18 +114,18 @@ class WarningLetterController extends Controller
         ];
 
         if ($data->level == 'I') {
-            $pdf = PDF::loadView('admin.warningletter.letter_pdf', $letter)->setPaper('a4', 'potrait');;
+            $pdf = PDF::loadView('warningletter.letter_pdf', $letter)->setPaper('a4', 'potrait');;
         } elseif ($data->level == 'II') {
-            $pdf = PDF::loadView('admin.warningletter.letter2_pdf', $letter)->setPaper('a4', 'potrait');;
+            $pdf = PDF::loadView('warningletter.letter2_pdf', $letter)->setPaper('a4', 'potrait');;
         } elseif ($data->level == 'III') {
-            $pdf = PDF::loadView('admin.warningletter.letter3_pdf', $letter)->setPaper('a4', 'potrait');;
+            $pdf = PDF::loadView('warningletter.letter3_pdf', $letter)->setPaper('a4', 'potrait');;
         }
 
-        $email["email"] = $employee->email;
+        $email["email"] = $employee->User->email;
         $email["title"] = 'SURAT PERINGATAN ';
         $email["body"] = 'PENERBITAN SURAT';
-        $email["nama"] = $employee->name;
-
+        $email["name"] = $employee->name;
+        
         try {
             Mail::send('emails.sendWarningLetter', $email, function ($message) use ($email, $pdf, $employee) {
                 $message->to($email["email"], $email["email"])
@@ -131,10 +134,10 @@ class WarningLetterController extends Controller
 
             return redirect()->route('warningletter.index')->with('success','Data Berhasil di Kirim');
         } catch (\Exception $ex) {
-
+            
             $destoryletter = WarningLetter::find($data->id);
             $destoryletter->delete();
-            
+            return $ex;
             return redirect()->route('warningletter.index')->with('error','Data Gagal di Kirim');
         }
     }

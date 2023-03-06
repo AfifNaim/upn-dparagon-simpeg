@@ -21,7 +21,7 @@ class PaidLeaveController extends Controller
         $to         = date("Y-m-d");
         $paidLeave  = PaidLeave::where('date_send', date("Y-m-d"))->paginate(20);
 
-        return view('admin.paidleave.index', compact('from','to','paidleave'));
+        return view('paidleave.index', compact('from','to','paidLeave'));
     }
 
     /**
@@ -33,7 +33,7 @@ class PaidLeaveController extends Controller
     {
         $employee   = Employee::pluck('name', 'id');
 
-        return view('admin.paidleave.create', compact('employee'));
+        return view('paidleave.create', compact('employee'));
     }
 
     /**

@@ -1,5 +1,3 @@
-
-
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
@@ -7,7 +5,7 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h1>User</h1>
+            <h1>Tambah Pegawai</h1>
         </div>
 
         <div class="section-body">
@@ -26,16 +24,13 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            Halaman ini adalah dashboard <b>UMKM</b> yang berisi Informasi mengenai grafik keuangan dan data keuangan
+                            Halaman ini adalah menu Tambah Pegawai
                         </div>
                     </div>
                 </div>
 
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
-                        <div class="card-header">
-                            <a href="{{ route('employee.create') }}" class="btn note-btn btn-success">Tambah User</a>
-                        </div>
                         <div class="card-body">
                             <form method="POST" action="{{ route('employee.store') }}" enctype="multipart/form-data">
                                 @csrf
@@ -154,10 +149,6 @@
                                     @error('date_in')
                                     <small class="text-danger">{{ $message }}</small>
                                     @enderror
-                                </div>
-                                <div class="form-group">
-                                    <label>Foto</label>
-                                    <input class="form-control" type="file" name="image" id="image" accept=".jpeg, .jpg, .png">
                                 </div>
                                 <div class="form-group">
                                     <label class="text-capitalize">Role</label>

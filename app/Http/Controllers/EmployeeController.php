@@ -24,9 +24,10 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employee = User::all();
+        $user       = User::all();
+        $employee   = Employee::all();
 
-        return view('user.index', compact('employee'));
+        return view('user.index', compact('user','employee'));
     }
 
     /**
@@ -66,8 +67,7 @@ class EmployeeController extends Controller
             'phone'             => 'required',
             'position_id'       => 'required',
             'division_id'       => 'required',
-            'date_in'           => 'required',
-            'image'             => 'required|mimes:jpeg,png,jpg|file|max:5000'
+            'date_in'           => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -82,11 +82,9 @@ class EmployeeController extends Controller
         DB::beginTransaction();
         try {
 
-        $extension          = $request->file('image')->extension();
-        $imgname            = $request->nik . '_' . date('dmyHi') . '.' . $extension;
-        $path               = Storage::putFileAs('public/images', $request->file('image'), $imgname);
         $id                 = IdGenerator::generate(['table' => 'employees', 'length' => 8, 'prefix' => date('ym')]);
         $password           = bcrypt("$request->nik");
+
         $historyPosition    = HistoryPosition::where('employee_id', $id)
             ->where('position_id', $request->position_id)
             ->count();
@@ -110,8 +108,7 @@ class EmployeeController extends Controller
             'phone'             => $request->phone,
             'position_id'       => $request->position_id,
             'division_id'       => $request->division_id,
-            'date_in'           => $request->date_in,
-            'path'              => $path
+            'date_in'           => $request->date_in
         );
 
         $employee = Employee::create($employeeArray);
@@ -177,13 +174,13 @@ class EmployeeController extends Controller
      * @param  \App\Models\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function edit(Employee $employee)
+    public function edit(User $employee)
     {
         $position   = Position::all();
         $division   = Division::all();
         $manager    = Employee::all();
 
-        return view('admin.employee.edit', compact('employee','position','division'));
+        return view('user.edit', compact('employee','position','division'));
     }
 
     /**
@@ -193,15 +190,15 @@ class EmployeeController extends Controller
      * @param  \App\Models\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, $employee)
     {
-        $user = User::where('employee_id', $employee->id)->first();
+        $user = User::find($employee);
 
-        $historyPosition = HistoryPosition::where('employee_id', $employee->id)
+        $historyPosition = HistoryPosition::where('employee_id', $employee->Employee->id)
             ->where('position_id', $request->position_id)
             ->count();
 
-        $historyDivision = HistoryDivision::where('employee_id', $employee->id)
+        $historyDivision = HistoryDivision::where('employee_id', $employee->Employee->id)
             ->where('division_id', $request->devision_id)
             ->count();
 
@@ -211,8 +208,8 @@ class EmployeeController extends Controller
             $imgname    = $request->nik . '_' . date('dmyHi') . '.' . $extension;
             $validator = Validator::make($request->all(), [
                 'role'              => 'required',
-                'nik'               => 'required',
-                'name'              => 'required',
+                'nik'               => 'required|unique:employees,nik,'.$employee->nik,
+                'name'              => 'required|unique:users,name,'.$employee->name,
                 'gender'            => 'required',
                 'religion'          => 'required',
                 'birth_place'       => 'required',

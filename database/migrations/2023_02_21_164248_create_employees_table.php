@@ -30,7 +30,6 @@ class CreateEmployeesTable extends Migration
             $table->unsignedBigInteger('manager_id')->nullable();
             $table->unsignedBigInteger('position_id')->nullable();
             $table->unsignedBigInteger('division_id')->nullable();
-            $table->string('path');
             $table->timestamps();
             $table->softDeletes();
 

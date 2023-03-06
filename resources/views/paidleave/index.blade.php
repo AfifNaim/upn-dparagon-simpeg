@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Pengajuan Pegawai')
+@section('title', 'Cuti Pegawai')
 
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h1>Master Data Pegawai</h1>
+            <h1>Cuti Pegawai</h1>
         </div>
 
         <div class="section-body">
@@ -24,7 +24,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            Halaman ini adalah menu Master Pegawai
+                            Halaman ini adalah menu Pengajuan Cuti Pegawai
                         </div>
                     </div>
                 </div>
@@ -32,52 +32,44 @@
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('employee.create') }}" class="btn note-btn btn-success">Tambah User</a>
+                            <a href="{{ route('paidleave.create') }}" class="btn note-btn btn-success">Buat Cuti</a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-md" id="data_table">
                                     <thead class="table-light">
                                         <td>No</td>
-                                        <td>NIK</td>
                                         <td>Nama</td>
-                                        <td>Email</td>
-                                        <td>Role</td>
+                                        <td>Tipe Cuti</td>
+                                        <td>Tanggal Pengajuan</td>
+                                        <td>Status</td>
                                         <td style="text-align: right">Action</td>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $i = 0;
                                         ?>
-                                        @foreach ($user as $user)
+                                        @foreach ($paidLeave as $data)
                                         <tr>
                                             <td>{{ ++$i }}</td>
-                                            <td><b>{{ $user->id }}</b></span>
-                                                <br>
-                                                <span class="label bg-danger">{{ $user->role }}</span>
-                                                <br>
-                                                {{ $user->name }}
-                                                <br>
-                                                <span class="label bg-warning">{{ $user->Division->name }}</span>
-                                                <span class="label bg-teal">
-        
-                                                    @if ($user->position_id == null)
-                                                        <b>Belum Ada Jabatan</b>
-                                                    @else
-                                                        {{ $user->Position->name }}
-                                                    @endif
-        
-                                                </span>
-                                                <br>
-                                                {{ $user->email . ' / ' . $user->name }}
+                                            <td>{{ $data->Employee->name }}</td>
+                                            <td>{{ $data->type }}</td>
+                                            <td class="text-center">{{ date('d F Y', strtotime($data->date_send)) }}
                                             </td>
-                                            <td>{{ $user->name }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>{{ $user->role }}</td>
+                                            <td class="text-center"><span <?php if ($data->status == 'Diterima HRD' || $data->status == 'Diterima Manager') {
+                                                echo 'class="label bg-success"';
+                                            }
+                                            if ($data->status == 'Ditolak HRD' || $data->status == 'Ditolak Manager') {
+                                                echo 'class="label bg-danger"';
+                                            }
+                                            if ($p->status == 'Diproses') {
+                                                echo 'class="label bg-info"';
+                                            }
+                                            ?>>{{ $data->status }}</span>
                                             <td style="text-align: right">
-                                            <form action="{{ route('employee.destroy',$user->id) }}" method="POST">
-                                                <a href="{{ route('employee.edit', $user->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                                <a href="{{ route('employee.show', $user->id) }}" class="btn btn-success btn-sm">Show</a>
+                                            <form action="{{ route('paidleave.destroy',$data->id) }}" method="POST">
+                                                <a href="{{ route('paidleave.edit', $data->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                                <a href="{{ route('paidleave.show', $data->id) }}" class="btn btn-success btn-sm">Show</a>
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm"

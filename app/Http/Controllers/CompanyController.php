@@ -19,7 +19,12 @@ class CompanyController extends Controller
     {
         $company = Company::orderBy('id')->first();
 
-        return view('company', compact('company'));
+        if (empty($company)){
+            return view('company.create');    
+        } else {
+            return view('company.index', compact('company'));
+        }
+
     }
 
     /**
@@ -39,7 +44,7 @@ class CompanyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    { 
         $validator = Validator::make($request->all(), [
             'name'          => 'required',
             'address'       => 'required',
@@ -125,7 +130,6 @@ class CompanyController extends Controller
     {
         $env = new DotenvEditor();
 
-
         if ($request->hasFile('path_logo')) {
 
             $extension  = $request->file('path_logo')->extension();
@@ -161,7 +165,7 @@ class CompanyController extends Controller
                 $file = DotenvEditor::setKeys([
                     [
                         'key'     => 'MAIL_USERNAME',
-                        'value'   => $request->email_private,
+                        'value'   => $request->private_email,
                     ],
                     [
                         'key'     => 'MAIL_PASSWORD',
@@ -198,7 +202,7 @@ class CompanyController extends Controller
                 $file = DotenvEditor::setKeys([
                     [
                         'key'     => 'MAIL_USERNAME',
-                        'value'   => $request->email_private,
+                        'value'   => $request->private_email,
                     ],
                     [
                         'key'     => 'MAIL_PASSWORD',
