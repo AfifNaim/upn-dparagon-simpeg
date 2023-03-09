@@ -18,7 +18,7 @@ class CreateRulesTable extends Migration
             $table->time('time_in')->nullable();
             $table->time('time_out')->nullable();
             $table->integer('total_yearly_leave')->unsigned()->nullable()->default(12);
-            $table->integer('total_big_leave_')->unsigned()->nullable()->default(12);
+            $table->integer('total_big_leave')->unsigned()->nullable()->default(12);
             $table->integer('total_mass_leave')->unsigned()->nullable()->default(12);
             $table->integer('total_maternity_leave')->unsigned()->nullable()->default(12);
             $table->integer('total_sick_leave')->unsigned()->nullable()->default(12);

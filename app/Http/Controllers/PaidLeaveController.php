@@ -31,7 +31,7 @@ class PaidLeaveController extends Controller
      */
     public function create()
     {
-        $employee   = Employee::pluck('name', 'id');
+        $employee   = Employee::all();
 
         return view('paidleave.create', compact('employee'));
     }
@@ -45,7 +45,7 @@ class PaidLeaveController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'employee_id'   => 'required',
+            'employee'   => 'required',
             'type'          => 'required',
             'date_start'    => 'required',
             'date_end'      => 'required',
@@ -62,13 +62,13 @@ class PaidLeaveController extends Controller
         }
 
         $paidLeaveArray = array(
-            'employee_id'           => $request->employe_id,
+            'employee_id'           => $request->employee,
             'type'                  => $request->type,
             'date_send'             => date("Y-m-d"),
             'date_start'            => $request->date_start,
             'date_end'              => $request->date_end,
             'description'           => $request->description,
-            'status'                => "Onprocess",
+            'status'                => "Dalam Proses",
             'date_accept_manager'   => NULL,
             'date_accept_hrd'       => NULL,
             'date_decline_manager'  => NULL,
@@ -86,17 +86,17 @@ class PaidLeaveController extends Controller
      * @param  \App\Models\PaidLeave  $paidLeave
      * @return \Illuminate\Http\Response
      */
-    public function show(PaidLeave $paidLeave)
+    public function show(PaidLeave $paidleave)
     {
-        $date_in    = $paidLeave->Employee->date_in;
+        @$date_in    = $paidleave->Employee->date_in;
         $date       = date("Y-m-d");
 
-        $date1 = new DateTime($$date_in);
+        $date1 = new DateTime($date_in);
         $date2 = new DateTime($date);
 
         $interval = $date1->diff($date2);
 
-        return view('admin.paidleave.show', compact('paidLeave', 'interval'));
+        return view('paidleave.show', compact('paidleave', 'interval'));
     }
 
     /**
@@ -105,11 +105,11 @@ class PaidLeaveController extends Controller
      * @param  \App\Models\PaidLeave  $paidLeave
      * @return \Illuminate\Http\Response
      */
-    public function edit(PaidLeave $paidLeave)
+    public function edit(PaidLeave $paidleave)
     {
-        $employee = Employee::pluck('name', 'id');
+        $employee = Employee::all();
 
-        return view('admin.paidleave.edit', compact('paidLeave', 'employee'));
+        return view('paidleave.edit', compact('paidleave', 'employee'));
     }
 
     /**
@@ -119,11 +119,10 @@ class PaidLeaveController extends Controller
      * @param  \App\Models\PaidLeave  $paidLeave
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PaidLeave $paidLeave)
+    public function update(Request $request, PaidLeave $paidleave)
     {      
-
         $validator = Validator::make($request->all(), [
-            'employee_id'   => 'required',
+            'employee'      => 'required',
             'type'          => 'required',
             'date_send'     => 'required',
             'date_start'    => 'required',
@@ -140,9 +139,9 @@ class PaidLeaveController extends Controller
                     ->withErrors($validator->errors())
                     ->with('error',"Gagal menyimpan data. Cek kembali data inputan Anda.");
         }
-
+        
         $paidLeaveArray = array(
-            'employee_id'           => $request->employe_id,
+            'employee_id'           => $request->employee,
             'type'                  => $request->type,
             'date_send'             => $request->date_send,
             'date_start'            => $request->date_start,
@@ -155,7 +154,7 @@ class PaidLeaveController extends Controller
             'date_decline_hrd'      => $request->date_decline_hrd
         );
 
-        $paidLeave->update($paidLeaveArray);
+        $paidleave->update($paidLeaveArray);
 
         return redirect()->route('paidleave.index')->with('success','Data Berhasil di Ubah');
     }
@@ -166,9 +165,9 @@ class PaidLeaveController extends Controller
      * @param  \App\Models\PaidLeave  $paidLeave
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PaidLeave $paidLeave)
+    public function destroy(PaidLeave $paidleave)
     {
-        $paidLeave->delete();
+        $paidleave->delete();
 
         return redirect()->route('paidleave.index')->with('error','Data Berhasil di Hapus');
     }

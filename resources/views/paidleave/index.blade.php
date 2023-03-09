@@ -40,9 +40,9 @@
                                     <thead class="table-light">
                                         <td>No</td>
                                         <td>Nama</td>
-                                        <td>Tipe Cuti</td>
-                                        <td>Tanggal Pengajuan</td>
-                                        <td>Status</td>
+                                        <td class="text-center">Tipe Cuti</td>
+                                        <td class="text-center">Tanggal Pengajuan</td>
+                                        <td class="text-center">Status</td>
                                         <td style="text-align: right">Action</td>
                                     </thead>
                                     <tbody>
@@ -53,7 +53,7 @@
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             <td>{{ $data->Employee->name }}</td>
-                                            <td>{{ $data->type }}</td>
+                                            <td class="text-center">{{ $data->type }}</td>
                                             <td class="text-center">{{ date('d F Y', strtotime($data->date_send)) }}
                                             </td>
                                             <td class="text-center"><span <?php if ($data->status == 'Diterima HRD' || $data->status == 'Diterima Manager') {
@@ -62,12 +62,12 @@
                                             if ($data->status == 'Ditolak HRD' || $data->status == 'Ditolak Manager') {
                                                 echo 'class="label bg-danger"';
                                             }
-                                            if ($p->status == 'Diproses') {
+                                            if ($data->status == 'Diproses') {
                                                 echo 'class="label bg-info"';
                                             }
                                             ?>>{{ $data->status }}</span>
                                             <td style="text-align: right">
-                                            <form action="{{ route('paidleave.destroy',$data->id) }}" method="POST">
+                                            <form action="{{ route('paidleave.destroy',$data) }}" method="POST">
                                                 <a href="{{ route('paidleave.edit', $data->id) }}" class="btn btn-primary btn-sm">Edit</a>
                                                 <a href="{{ route('paidleave.show', $data->id) }}" class="btn btn-success btn-sm">Show</a>
                                                 @csrf

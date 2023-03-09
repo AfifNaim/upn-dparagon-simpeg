@@ -54,11 +54,11 @@
                                             <td>{{ ++$i }}</td>
                                             <td><b>{{ $user->id }}</b></span>
                                                 <br>
-                                                <span class="label bg-danger">{{ $user->role }}</span>
+                                                <span class="label bg-success">{{ $user->role }}</span>
                                                 <br>
                                                 {{ $user->name }}
                                                 <br>
-                                                <span class="label bg-warning">{{ $user->Division->name }}</span>
+                                                <span class="label bg-warning">{{ @$user->Division->name }}</span>
                                                 <span class="label bg-teal">
         
                                                     @if ($user->position_id == null)

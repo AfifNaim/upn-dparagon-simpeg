@@ -16,12 +16,12 @@ class CreatePaidLeavesTable extends Migration
         Schema::create('paid_leaves', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_id');
-            $table->enum('type', ['Yearly', 'Big', 'Mass', 'Maternity', 'Sick', 'Important']);
+            $table->enum('type', ['Tahunan', 'Besar', 'Bersama', 'Hamil', 'Sakit', 'Penting']);
             $table->date('date_send');
             $table->date('date_start');
             $table->date('date_end');
             $table->text('description');
-            $table->enum('status', ['Disetujui HRD', 'Ditolak HRD', 'Diterima Manager', 'Ditolak Manager', 'Dalam Proses']);
+            $table->enum('status', ['Diterima HRD', 'Ditolak HRD', 'Diterima Manager', 'Ditolak Manager', 'Dalam Proses']);
             $table->date('date_accept_manager')->nullable();
             $table->date('date_accept_hrd')->nullable();
             $table->date('date_decline_manager')->nullable();

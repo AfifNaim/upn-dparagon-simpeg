@@ -9,6 +9,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaidLeaveController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RuleController;
+use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\WarningLetterController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,7 @@ Route::get('/', [HomeController::class, 'landingpage'])->name('landingpage');
 Route::group(['middleware' => ['auth']], function () {
     Route::get('home', [HomeController::class, 'index'])->name('home');
 
+    Route::get('/staff', [StaffDashboardController::class, 'index'])->name('staff');
     Route::resource('employee', EmployeeController::class);
     Route::resource('division', DivisionController::class);
     Route::resource('position', PositionController::class);
