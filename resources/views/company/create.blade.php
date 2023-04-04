@@ -18,7 +18,7 @@
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <form method="POST" action="{{ route('company.store') }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route(Auth::user()->role.'.company.store') }}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
                                     <label>Nama</label>
