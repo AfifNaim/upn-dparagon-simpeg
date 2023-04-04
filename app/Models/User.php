@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,11 +18,8 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
+    protected $guarded = [
+        'id',
     ];
 
     /**
@@ -42,4 +40,39 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function PaidLeave()
+    {
+        return $this->hasMany(PaidLeave::class);
+    }
+
+    public function HistoryPosition()
+    {
+        return $this->hasMany(HistoryPosition::class);
+    }
+
+    public function HistoryDivision()
+    {
+        return $this->hasMany(HistoryDivision::class);
+    }
+
+    public function Manager()
+    {
+        return $this->hasMany(Employee::class);
+    }
+
+    public function WarningLatter()
+    {
+        return $this->hasMany(WarningLatter::class);
+    }
+
+    public function Position()
+    {
+        return $this->belongsTo(Position::class, 'position_id', 'id');
+    }
+
+    public function Division()
+    {
+        return $this->belongsTo(Division::class, 'division_id', 'id');
+    }
 }

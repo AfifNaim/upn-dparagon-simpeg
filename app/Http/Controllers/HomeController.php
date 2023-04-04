@@ -3,26 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+
+    public function landingpage()
     {
-        $this->middleware('auth');
+        return view('landingpage');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        return view('home');
+        if (auth()->user()->role == 'Staff')
+            return redirect('/Staff');
+        elseif (auth()->user()->role == 'HRD')
+            return redirect('/HRD');
+        elseif (auth()->user()->role == 'Admin')
+            return redirect('/Admin');
+        else
+            abort(403);
     }
 }

@@ -20,7 +20,6 @@ class AdminPermission
         if(auth()->user()->role == 'Admin'){
             return $next($request);
         }
-
         return abort(403);
     }
 }

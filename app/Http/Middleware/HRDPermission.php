@@ -16,10 +16,9 @@ class HRDPermission
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! $request->user()->role('HRD')) {
-            abort(403);
+        if ($request->user()->role == 'HRD') {
+            return $next($request);
         }
-
-        return $next($request);
+        abort(403);
     }
 }

@@ -15,7 +15,7 @@ class Division extends Model
 
     public function Employee()
     {
-        return $this->hasMany(Employee::class);
+        return $this->hasMany(User::class);
     }
 
     public function HistoryDivision()

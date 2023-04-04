@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Position;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PositionController extends Controller
@@ -15,9 +16,9 @@ class PositionController extends Controller
      */
     public function index()
     {
-        $position = Position::all();
+        $position = Position::paginate(10);
 
-        return view('admin.position.index', compact('position'));
+        return view('position.index', compact('position'));
     }
 
     /**
@@ -27,7 +28,7 @@ class PositionController extends Controller
      */
     public function create()
     {
-        return view('admin.position.create');
+        return view('position.create');
     }
 
     /**
@@ -63,7 +64,7 @@ class PositionController extends Controller
 
         $data = Position::create($arrayData);
 
-        return redirect()->route('position.index')->with('success','Data Berhasil di Tambah');
+        return redirect()->route(Auth::user()->role.'.position.index')->with('success','Data Berhasil di Tambah');
     }
 
     /**
@@ -74,7 +75,7 @@ class PositionController extends Controller
      */
     public function show(Position $position)
     {
-        return view('admin.position.show', compact('position'));
+        return view('position.show', compact('position'));
     }
 
     /**
@@ -85,7 +86,7 @@ class PositionController extends Controller
      */
     public function edit(Position $position)
     {
-        return view('admin.position.create', compact('position'));
+        return view('position.edit', compact('position'));
     }
 
     /**
@@ -122,7 +123,7 @@ class PositionController extends Controller
 
         $position->update($arrayData);
 
-        return redirect()->route('position.index')->with('success','Data Berhasil di Ubah');
+        return redirect()->route(Auth::user()->role.'.position.index')->with('success','Data Berhasil di Ubah');
     }
 
     /**
@@ -135,6 +136,6 @@ class PositionController extends Controller
     {
         $position->delete();
 
-        return redirect()->route('position.index')->with('error','Data Berhasil di Hapus');
+        return redirect()->route(Auth::user()->role.'.position.index')->with('error','Data Berhasil di Hapus');
     }
 }
