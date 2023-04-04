@@ -171,7 +171,7 @@
         <div class="isi-surat">
             <div class="pembuka">
                 <p>
-                    Bersama dengan surat ini kami, Refactory Yogyakarta menyampaikan Surat Peringatan III terkait
+                    Bersama dengan surat ini kami, {{ $company->name }} menyampaikan Surat Peringatan III terkait
                     perihal Surat Peringatan I dan Surat Peringatan II</p>
             </div>
             <div class="pemberitahuan">

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employee;
 use App\Models\PaidLeave;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DateTime;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PaidLeaveController extends Controller
@@ -17,11 +19,9 @@ class PaidLeaveController extends Controller
      */
     public function index()
     {
-        $from       = date("Y-m-d");
-        $to         = date("Y-m-d");
-        $paidLeave  = PaidLeave::where('date_send', date("Y-m-d"))->paginate(20);
+        $paidLeave  = PaidLeave::latest()->paginate(10);
 
-        return view('paidleave.index', compact('from','to','paidLeave'));
+        return view('paidleave.index', compact('paidLeave'));
     }
 
     /**
@@ -31,7 +31,7 @@ class PaidLeaveController extends Controller
      */
     public function create()
     {
-        $employee   = Employee::all();
+        $employee   = User::where('role', '!=' ,"Admin")->get();
 
         return view('paidleave.create', compact('employee'));
     }
@@ -69,15 +69,13 @@ class PaidLeaveController extends Controller
             'date_end'              => $request->date_end,
             'description'           => $request->description,
             'status'                => "Dalam Proses",
-            'date_accept_manager'   => NULL,
             'date_accept_hrd'       => NULL,
-            'date_decline_manager'  => NULL,
             'date_decline_hrd'      => NULL,
         );
 
         $paidLeave = PaidLeave::create($paidLeaveArray);
 
-        return redirect()->route('paidleave.index')->with('success','Data Berhasil di Tambah');
+        return redirect()->route(Auth::user()->role.'.paidleave.index')->with('success','Data Berhasil di Tambah');
     }
 
     /**
@@ -107,7 +105,7 @@ class PaidLeaveController extends Controller
      */
     public function edit(PaidLeave $paidleave)
     {
-        $employee = Employee::all();
+        $employee = User::where('role', '!=' ,"Admin")->get();
 
         return view('paidleave.edit', compact('paidleave', 'employee'));
     }
@@ -120,9 +118,9 @@ class PaidLeaveController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, PaidLeave $paidleave)
-    {      
+    {
         $validator = Validator::make($request->all(), [
-            'employee'      => 'required',
+            'employee'   => 'required',
             'type'          => 'required',
             'date_send'     => 'required',
             'date_start'    => 'required',
@@ -139,7 +137,7 @@ class PaidLeaveController extends Controller
                     ->withErrors($validator->errors())
                     ->with('error',"Gagal menyimpan data. Cek kembali data inputan Anda.");
         }
-        
+
         $paidLeaveArray = array(
             'employee_id'           => $request->employee,
             'type'                  => $request->type,
@@ -148,15 +146,13 @@ class PaidLeaveController extends Controller
             'date_end'              => $request->date_end,
             'description'           => $request->description,
             'status'                => $request->status,
-            'date_accept_manager'   => $request->date_accept_manager,
             'date_accept_hrd'       => $request->date_accept_hrd,
-            'date_decline_manager'  => $request->date_decline_manager,
             'date_decline_hrd'      => $request->date_decline_hrd
         );
 
         $paidleave->update($paidLeaveArray);
 
-        return redirect()->route('paidleave.index')->with('success','Data Berhasil di Ubah');
+        return redirect()->route(Auth::user()->role.'.paidleave.index')->with('success','Data Berhasil di Ubah');
     }
 
     /**
@@ -169,17 +165,17 @@ class PaidLeaveController extends Controller
     {
         $paidleave->delete();
 
-        return redirect()->route('paidleave.index')->with('error','Data Berhasil di Hapus');
+        return redirect()->route(Auth::user()->role.'.paidleave.index')->with('error','Data Berhasil di Hapus');
     }
 
-    public function bigLeave()
+    public function massLeave()
     {
-        $employee = Employee::pluck('name', 'id');
-        return view('admin.paidleave.bigleave', compact('employee'));
+        $employee = User::pluck('name', 'employee_id');
+
+        return view('paidleave.massleave', compact('employee'));
     }
 
-
-    public function storeBigLeave(Request $request)
+    public function storeMassLeave(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'date_start'    => 'required',
@@ -196,26 +192,44 @@ class PaidLeaveController extends Controller
                     ->with('error',"Gagal menyimpan data. Cek kembali data inputan Anda.");
         }
 
-        $employee = Employee::all();
+        $employee = User::where('role', '!=' , "Admin")->get();
 
-        foreach ($$employee as $key => $data) {
-            // dd($p->id);
+        foreach ($employee as $key => $data) {
+
             PaidLeave::create([
-                'employee_id'           => $p->id,
-                'type'                  => "Big",
+                'employee_id'           => $data->employee_id,
+                'type'                  => "Besar",
                 'date_send'             => date("Y-m-d"),
-                'date_start'            => $request->tgl_mulai,
-                'date_end'              => $request->tgl_selesai,
-                'description'           => $request->ket,
-                'status'                => "Onprosess",
-                'date_accept_manager'   => NULL,
-                'date_accept_hrd'       => NULL,
-                'date_decline_manager'  => NULL,
+                'date_start'            => $request->date_start,
+                'date_end'              => $request->date_end,
+                'description'           => $request->description,
+                'status'                => "Diterima HRD",
+                'date_accept_hrd'       => Carbon::now()->format('Y-m-d H:i:s'),
                 'date_decline_hrd'      => NULL,
 
             ]);
         }
 
-        return redirect()->route('paidleave.index')->with('success','Data Berhasil di Tambah');
+        return redirect()->route(Auth::user()->role.'.paidleave.index')->with('success','Data Berhasil di Tambah');
+    }
+
+    public function approval($id)
+    {
+        $paidleave = PaidLeave::find($id);
+        $paidleave->status = "Diterima HRD";
+        $paidleave->date_accept_hrd = date('Y-m-d');
+        $paidleave->save();
+
+        return redirect()->route(Auth::user()->role.'.paidleave.index')->with('success','Izin Berhasil di Proses');
+    }
+
+    public function disapprove($id)
+    {
+        $paidleave = PaidLeave::find($id);
+        $paidleave->status = "Ditolak HRD";
+        $paidleave->date_decline_hrd = date('Y-m-d');
+        $paidleave->save();
+
+        return redirect()->route(Auth::user()->role.'.paidleave.index')->with('success','Izin Berhasil di Proses');
     }
 }

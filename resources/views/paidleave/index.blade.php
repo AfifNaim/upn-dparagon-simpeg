@@ -16,24 +16,13 @@
             <div class="row">
 
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
-                    <div class="card " id="mycard-dimiss">
-                        <div class="card-header">
-                            <h4>Informasi Halaman</h4>
-                            <div class="card-header-action">
-                                <a data-dismiss="#mycard-dimiss" class="btn btn-icon btn-danger" href="#"><i class="fas fa-times"></i></a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            Halaman ini adalah menu Pengajuan Cuti Pegawai
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('paidleave.create') }}" class="btn note-btn btn-success">Buat Cuti</a>
-                        </div>
+                            <div class="buttons">
+                                <a href="{{ route(Auth::user()->role.'.paidleave.create') }}" class="btn note-btn btn-success">Buat Cuti</a>
+                                <a href="{{ route(Auth::user()->role.'.paidleave.massLeave') }}" class="btn note-btn btn-primary">Buat Cuti Besama</a>
+                            </div>
+                            </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-md" id="data_table">
@@ -56,35 +45,51 @@
                                             <td class="text-center">{{ $data->type }}</td>
                                             <td class="text-center">{{ date('d F Y', strtotime($data->date_send)) }}
                                             </td>
-                                            <td class="text-center"><span <?php if ($data->status == 'Diterima HRD' || $data->status == 'Diterima Manager') {
+                                            <td class="text-center"><span
+                                            <?php if ($data->status == 'Diterima HRD') {
                                                 echo 'class="label bg-success"';
                                             }
-                                            if ($data->status == 'Ditolak HRD' || $data->status == 'Ditolak Manager') {
+                                            if ($data->status == 'Ditolak HRD') {
                                                 echo 'class="label bg-danger"';
                                             }
-                                            if ($data->status == 'Diproses') {
+                                            if ($data->status == 'Dalam Proses') {
                                                 echo 'class="label bg-info"';
                                             }
-                                            ?>>{{ $data->status }}</span>
-                                            <td style="text-align: right">
-                                            <form action="{{ route('paidleave.destroy',$data) }}" method="POST">
-                                                <a href="{{ route('paidleave.edit', $data->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                                <a href="{{ route('paidleave.show', $data->id) }}" class="btn btn-success btn-sm">Show</a>
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</button>
-                                            </form>
+                                                ?>>{{ $data->status }}</span>
+                                            <td style="text-align: center">
+                                            @if($data->status == ('Dalam Proses'))
+                                                <form action="{{ route(Auth::user()->role.'.paidleave.approval', $data->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Apakah Anda menyetuji izin ini?')">Setujui</button>
+                                                </form>
+                                                <form action="{{ route(Auth::user()->role.'.paidleave.disapprove', $data->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda menyetuji izin ini?')">Tolak</button>
+                                                </form>
+                                                <a href="{{ route(Auth::user()->role.'.paidleave.edit', $data->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                                <a href="{{ route(Auth::user()->role.'.paidleave.show', $data->id) }}" class="btn btn-success btn-sm">Show</a>
+                                                <form action="{{ route(Auth::user()->role.'.paidleave.destroy',$data) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</button>
+                                                </form>
+                                            @else
+                                                <a href="{{ route(Auth::user()->role.'.paidleave.show', $data->id) }}" class="btn btn-primary btn-sm">Show</a>
+                                            @endif
                                             </td>
                                         </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
+                                <div class="pagination justify-content-end">
+                                    {!! $paidLeave->links() !!}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>

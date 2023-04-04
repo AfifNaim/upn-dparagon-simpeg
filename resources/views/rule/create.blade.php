@@ -16,20 +16,6 @@
             <div class="row">
 
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
-                    <div class="card " id="mycard-dimiss">
-                        <div class="card-header">
-                            <h4>Informasi Halaman</h4>
-                            <div class="card-header-action">
-                                <a data-dismiss="#mycard-dimiss" class="btn btn-icon btn-danger" href="#"><i class="fas fa-times"></i></a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            Halaman ini adalah menu Peraturan Perusahaan
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-body">
                             <form method="POST" action="{{ route('rule.store') }}" enctype="multipart/form-data">

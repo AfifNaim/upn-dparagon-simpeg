@@ -16,20 +16,6 @@
             <div class="row">
 
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
-                    <div class="card " id="mycard-dimiss">
-                        <div class="card-header">
-                            <h4>Informasi Halaman</h4>
-                            <div class="card-header-action">
-                                <a data-dismiss="#mycard-dimiss" class="btn btn-icon btn-danger" href="#"><i class="fas fa-times"></i></a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            Halaman ini adalah menu Detail Cuti Pegawai
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group">
@@ -60,7 +46,15 @@
                                 <label class="text-capitalize">Status</label>
                                 <input type="text" class="form-control" name="status" value="{{ $paidleave->status }}" disabled>
                             </div>
-                            <a href="{{ route('paidleave.index') }}" class="btn btn-secondary">Back</a>
+                            <div class="form-group">
+                                <label class="text-capitalize">Tanggal Diterima</label>
+                                <input type="text" class="form-control" name="date_end" value="{{ $paidleave->date_accept_hrd }}" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="text-capitalize">Tanggal Ditolak</label>
+                                <input type="text" class="form-control" name="date_end" value="{{ $paidleave->date_decline_hrd }}" disabled>
+                            </div>
+                            <a href="{{ route(Auth::user()->role.'.paidleave.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </div>
                 </div>

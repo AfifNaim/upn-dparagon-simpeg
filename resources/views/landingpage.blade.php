@@ -16,9 +16,8 @@
     <link rel="stylesheet" href="{{ asset('templatemo/css/templatemo-softy-pinko.css') }}">
 
     </head>
-    
+
     <body>
-    
     
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky">
@@ -28,18 +27,11 @@
                     <nav class="main-nav">
                         <!-- ***** Logo Start ***** -->
                         <a href="#" class="logo">
-                            <img src="{{ asset('templatemo/images/logo.png') }}" alt="Softy Pinko"/>
+                            <img src="{{ asset('images/dparagon.png') }}" width="20%" alt="Softy Pinko"/>
                         </a>
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <li><a href="#welcome" class="active">Home</a></li>
-                            <li><a href="#features">About</a></li>
-                            <li><a href="#work-process">Work Process</a></li>
-                            <li><a href="#testimonials">Testimonials</a></li>
-                            <li><a href="#pricing-plans">Pricing Tables</a></li>
-                            <li><a href="#blog">Blog Entries</a></li>
-                            <li><a href="#contact-us">Contact Us</a></li>
                             @guest
                             <li><a href="{{ route('login') }}">Login</a></li>    
                             @endguest
@@ -55,7 +47,7 @@
                 </div>
             </div>
         </div>
-    </header>
+    </header> 
     <!-- ***** Header Area End ***** -->
 
     <!-- ***** Welcome Area Start ***** -->
@@ -66,10 +58,8 @@
             <div class="container">
                 <div class="row">
                     <div class="offset-xl-3 col-xl-6 offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-                        <h1>We provide the best <strong>strategy</strong><br>to grow up your <strong>business</strong></h1>
-                        <p>Softy Pinko is a professional Bootstrap 4.0 theme designed by Template Mo 
-                        for your company at absolutely free of charge</p>
-                        <a href="#features" class="main-button-slider">Discover More</a>
+                        <h1><strong>Stay With Style</strong></h1>
+                        <p>Jaringan Kos Eksklusif Terbesar</p>
                     </div>
                 </div>
             </div>
@@ -83,15 +73,15 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 col-md-12 col-sm-12 align-self-center" data-scroll-reveal="enter left move 30px over 0.6s after 0.4s">
-                    <img src="assets/images/left-image.png" class="rounded img-fluid d-block mx-auto" alt="App">
+                    <img src="{{ asset('images/dparagon.png') }}" class="rounded img-fluid d-block mx-auto" alt="App">
                 </div>
                 <div class="col-lg-1"></div>
                 <div class="col-lg-6 col-md-12 col-sm-12 align-self-center mobile-top-fix">
                     <div class="left-heading">
-                        <h2 class="section-title">Let’s discuss about you project</h2>
+                        <h2 class="section-title">About US</h2>
                     </div>
                     <div class="left-text">
-                        <p>Nullam sit amet purus libero. Etiam ullamcorper nisl ut augue blandit, at finibus leo efficitur. Nam gravida purus non sapien auctor, ut aliquam magna ullamcorper.</p>
+                        <p>D’PARAGON sejak 2010 merupakan Hospitality manajemen yang konsisten menyediakan tempat hunian sementara dalam bentuk Kost Eksklusif dan Guest House yang bernuansa nyaman, eksklusif dan berprivasi tinggi, untuk para pelanggannya. D ’PARAGON memiliki konsep hunian yaitu “ STAY WITH STYLE” kami berusaha memberikan produk layanan dan fasilitas hunian yang lebih mencerminkan gaya hidup modern masyarakat milenial yang eksklusif.</p>
                     </div>
                 </div>
             </div>
@@ -110,17 +100,15 @@
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <ul class="social">
-                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                        <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                        <li><a href="#"><i class="fa fa-rss"></i></a></li>
-                        <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+                        <li><a href="https://www.facebook.com/promodparagon/"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="https://twitter.com/DParagonKost"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="https://id.linkedin.com/company/pt-royal-dparagon-land?original_referer=https%3A%2F%2Fwww.google.com%2F"><i class="fa fa-linkedin"></i></a></li>
                     </ul>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <p class="copyright">Copyright &copy; 2020 Softy Pinko Company - Design: TemplateMo</p>
+                    <p class="copyright">Copyright &copy; {{ date('Y') }} ROYAL DPARAGON LAND</p>
                 </div>
             </div>
         </div>

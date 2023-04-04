@@ -21,7 +21,7 @@ class CreatePaidLeavesTable extends Migration
             $table->date('date_start');
             $table->date('date_end');
             $table->text('description');
-            $table->enum('status', ['Diterima HRD', 'Ditolak HRD', 'Diterima Manager', 'Ditolak Manager', 'Dalam Proses']);
+            $table->enum('status', ['Diterima HRD', 'Ditolak HRD','Dalam Proses']);
             $table->date('date_accept_manager')->nullable();
             $table->date('date_accept_hrd')->nullable();
             $table->date('date_decline_manager')->nullable();
@@ -30,8 +30,8 @@ class CreatePaidLeavesTable extends Migration
 
             $table->index('employee_id');
             $table->foreign('employee_id')
-                ->references('id')
-                ->on('employees')
+                ->references('employee_id')
+                ->on('users')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

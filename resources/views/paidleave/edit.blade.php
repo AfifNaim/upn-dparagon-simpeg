@@ -16,23 +16,9 @@
             <div class="row">
 
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
-                    <div class="card " id="mycard-dimiss">
-                        <div class="card-header">
-                            <h4>Informasi Halaman</h4>
-                            <div class="card-header-action">
-                                <a data-dismiss="#mycard-dimiss" class="btn btn-icon btn-danger" href="#"><i class="fas fa-times"></i></a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            Halaman ini adalah menu Edit Cuti Pegawai
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <form method="POST" action="{{ route('paidleave.update', $paidleave) }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route(Auth::user()->role.'.paidleave.update', $paidleave) }}" enctype="multipart/form-data">
                                 @method('PATCH')
                                 @csrf
                                 <div class="form-group">
@@ -40,7 +26,7 @@
                                     <select class="form-control select2" name="employee" id="employee">
                                         <option value="">----PILIH----</option>
                                         @foreach ($employee as $employees)
-                                            <option value="{{ $employees->id }}" {{ $paidleave->employee_id == $employees->id  ? 'selected' : '' }}>{{ $employees->name }}</option>
+                                            <option value="{{ $employees->employee_id }}" {{ $paidleave->employee_id == $employees->employee_id  ? 'selected' : '' }}>{{ $employees->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('employee')
@@ -113,44 +99,15 @@
 
                                             <div class="radio">
                                                 <label>
-                                                    <input type="radio" value="Diterima Manager" class="styled" name="status"
-                                                        {{ $paidleave->status == 'Diterima Manager' ? 'checked' : '' }}>
-                                                    Diterima Manager
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="radio">
-                                                <label>
                                                     <input type="radio" value="Ditolak HRD" class="styled" name="status"
                                                         {{ $paidleave->status == 'Ditolak HRD' ? 'checked' : '' }}>
                                                     Ditolak HRD
-                                                </label>
-                                            </div>
-                                            <div class="radio">
-                                                <label>
-                                                    <input type="radio" value="Ditolak Manager" class="styled" name="status"
-                                                        {{ $paidleave->status == 'Ditolak Manager' ? 'checked' : '' }}>
-                                                    Ditolak Manager
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="mt-5"></div>
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Tanggal Disetujui Atasan</label>
-                                                <input type="date" name="date_accept_manager" class="form-control"
-                                                    value="{{ $paidleave->date_accept_manager }}">
-                                                @if ($errors->has('date_accept_manager'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('date_accept_manager') }}
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -166,18 +123,6 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Tanggal Ditolak Atasan</label>
-                                                <input type="date" name="date_decline_manager" class="form-control"
-                                                    value="{{ $paidleave->date_decline_manager }}">
-                                                @if ($errors->has('date_decline_manager'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('date_decline_manager') }}
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -194,7 +139,7 @@
                                     </div>
                                 </div>
                                 <input type="submit" value="Save" class="btn note-btn btn-info btn-lg">
-                                <a href="{{ route('paidleave.index') }}" class="btn btn-secondary">Back</a>
+                                <a href="{{ route(Auth::user()->role.'.paidleave.index') }}" class="btn btn-secondary">Back</a>
                             </form>
                         </div>
                     </div>

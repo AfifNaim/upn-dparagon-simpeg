@@ -2,7 +2,7 @@
 
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Divisi')
 
 @section('content')
     <section class="section">
@@ -18,47 +18,30 @@
             <div class="row">
 
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
-                    <div class="card " id="mycard-dimiss">
-                        <div class="card-header">
-                            <h4>Informasi Halaman</h4>
-                            <div class="card-header-action">
-                                <a data-dismiss="#mycard-dimiss" class="btn btn-icon btn-danger" href="#"><i class="fas fa-times"></i></a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            Halaman ini adalah dashboard <b>UMKM</b> yang berisi Informasi mengenai grafik keuangan dan data keuangan
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('position.create') }}" class="btn note-btn btn-success">Tambah User</a>
+                            <a href="{{ route(Auth::user()->role.'.division.create') }}" class="btn note-btn btn-success">Tambah Divisi</a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-md" id="data_table">
                                     <thead class="table-light">
                                         <td>No</td>
-                                        <td>Posisi</td>
-                                        <td>Gaji</td>
+                                        <td>Divisi</td>
                                         <td style="text-align: right">Action</td>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $i = 0;
                                         ?>
-                                        @foreach ($position as $user)
+                                        @foreach ($division as $user)
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             <td>{{ $user->name }}</td>
-                                            <td>{{ $user->salary }}</td>
                                             <td style="text-align: right">
-                                            <form action="{{ route('position.destroy',$user->id) }}" method="POST">
-                                                <a href="{{ route('position.edit', $user->id) }}"
+                                            <form action="{{ route(Auth::user()->role.'.division.destroy',$user->id) }}" method="POST">
+                                                <a href="{{ route(Auth::user()->role.'.division.edit', $user->id) }}"
                                                     class="btn btn-primary btn-sm">Edit</a>
-                                                
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm"
@@ -69,11 +52,13 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                                <div class="pagination justify-content-end">
+                                    {!! $division->links() !!}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>

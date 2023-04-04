@@ -16,23 +16,9 @@
             <div class="row">
 
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
-                    <div class="card " id="mycard-dimiss">
-                        <div class="card-header">
-                            <h4>Informasi Halaman</h4>
-                            <div class="card-header-action">
-                                <a data-dismiss="#mycard-dimiss" class="btn btn-icon btn-danger" href="#"><i class="fas fa-times"></i></a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            Halaman ini adalah menu Perusahaan
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <form method="POST" action="{{ route('company.update', $company->id) }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route(Auth::user()->role.'.company.update', $company->id) }}" enctype="multipart/form-data">
                                 @method('PATCH')
                                 @csrf
                                 <div class="form-group">
@@ -82,23 +68,6 @@
                                     <input type="file" id="myFile" name="path_logo">
                                     <input type="hidden" name="logo_lama" value="{{ $company->path_logo }}">
                                     @error('path_logo')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="form-group">
-                                    <h4>E-Mail</h4>
-                                </div>
-                                <div class="form-group">
-                                    <label>E-Mail Private</label>
-                                    <input type="email" class="form-control  @error('private_email') is-invalid @enderror" name="private_email" value="{{ $company->private_email }}">
-                                    @error('private_email')
-                                    <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="form-group">
-                                    <label>Password</label>
-                                    <input type="password" class="form-control  @error('password') is-invalid @enderror" name="password" value="" placeholder="">
-                                    @error('password')
                                     <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>

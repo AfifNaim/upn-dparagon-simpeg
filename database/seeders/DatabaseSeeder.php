@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             PositionSeeder::class,
             DivisionSeeder::class,
+            RuleSeeder::class,
         ]);
     }
 }

@@ -16,10 +16,9 @@ class StaffPermission
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! $request->user()->role('Staff')) {
-            abort(403);
+        if (auth()->user()->role == 'Staff') {
+            return $next($request);
         }
-
-        return $next($request);
+        abort(403);
     }
 }

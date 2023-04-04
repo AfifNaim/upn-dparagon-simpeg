@@ -21,8 +21,6 @@ class CreateCompaniesTable extends Migration
             $table->string('phone')->nullable();
             $table->string('public_email')->unique();
             $table->string('path_logo')->nullable();
-            $table->string('private_email')->unique();
-            $table->text('password');
             $table->timestamps();
         });
     }

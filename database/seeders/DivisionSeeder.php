@@ -21,6 +21,9 @@ class DivisionSeeder extends Seeder
             [
                 'name' => 'Divisi 2',
             ],
+            [
+                'name' => 'Divisi 3',
+            ],
 
         ];
 

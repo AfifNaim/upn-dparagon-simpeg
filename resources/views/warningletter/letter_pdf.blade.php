@@ -133,8 +133,8 @@
                 <img src="{{ public_path() . $path }}">
             </div>
             <div class="column right">
-                <h4>{{ $company->name }}</h4>
-                <h5>{{ $company->address }}</h5>
+                <h6>{{ $company->name }}</h6>
+                <h4>{{ $company->address }}</h4>
                 <h6>Email: {{ $company->email_public }}, No. Telp:{{ $company->phone }}</h6>
             </div>
         </div>
@@ -150,8 +150,8 @@
                 <tr>
                     <td>ID Pegawai</td>
                     <td style="padding-left:15px;padding-right:15px">:</td>
-                    <td>{{ $employee->id }}</td>
-                </tr>
+                    <td>{{ $employee->employee_id }}</td>
+                </tr>1
                 <tr>
                     <td>Nama</td>
                     <td style="padding-left:15px;padding-right:15px">:</td>
@@ -160,12 +160,12 @@
                 <tr>
                     <td>Jabatan</td>
                     <td style="padding-left:15px;padding-right:15px">:</td>
-                    <td>{{ $employee->position->name }}</td>
+                    <td>{{ $employee->Position->name }}</td>
                 </tr>
                 <tr>
                     <td>Divisi</td>
                     <td style="padding-left:15px;padding-right:15px">:</td>
-                    <td>{{ $employee->division->name }}</td>
+                    <td>{{ $employee->Division->name }}</td>
                 </tr>
             </table>
         </div>
@@ -194,7 +194,7 @@
 
             <div class="penutup">
                 <p>
-                    Demikian surat ini Kami sampaikan dan berlaku selama menjadi pegawai Refactory Yogyakarta, kepada
+                    Demikian surat ini Kami sampaikan dan berlaku selama menjadi pegawai {{ $company->name }}, kepada
                     yang bersangkutkan harap diperhatikan dan diperbaiki dengan segera. Apabila yang bersangkutan tidak
                     mengindahkan Surat Peringatan 1 ini, Maka kami akan menindaklanjuti dengan pemberian <b>Surat
                         Peringatan II.</b>
@@ -208,7 +208,8 @@
                 {{ $company->city . ', ' . date('d F Y', strtotime($date)) }}
             </div>
             <br>
-            {{ Auth::user()->name }}
+            <br>
+            {{ @(Auth::user()->Position->name) }}
             <br>
             <div class="mt-3"></div>
             {{ Auth::user()->name }}

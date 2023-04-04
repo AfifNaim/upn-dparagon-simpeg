@@ -18,38 +18,31 @@
             <div class="row">
 
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
-                    <div class="card " id="mycard-dimiss">
-                        <div class="card-header">
-                            <h4>Informasi Halaman</h4>
-                            <div class="card-header-action">
-                                <a data-dismiss="#mycard-dimiss" class="btn btn-icon btn-danger" href="#"><i class="fas fa-times"></i></a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            Halaman ini adalah dashboard <b>UMKM</b> yang berisi Informasi mengenai grafik keuangan dan data keuangan
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('division.create') }}" class="btn note-btn btn-success">Tambah User</a>
+                            <a href="{{ route(Auth::user()->role.'.position.create') }}" class="btn note-btn btn-success">Tambah User</a>
                         </div>
                         <div class="card-body">
-                            <form method="POST" action="{{ route('division.store') }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route(Auth::user()->role.'.position.store') }}" enctype="multipart/form-data">
                                 @csrf
                                 
                                 <div class="form-group">
-                                    <label>Divisi</label>
+                                    <label>Posisi</label>
                                     <input type="text" class="form-control  @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}">
                                     @error('name')
                                     <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
+                                <div class="form-group">
+                                    <label>Gaji</label>
+                                    <input type="number" class="form-control  @error('salary') is-invalid @enderror" name="salary" value="{{ old('salary') }}">
+                                    @error('salary')
+                                    <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
                                 
                                 <input type="submit" value="Save" class="btn note-btn btn-info btn-lg">
-                                <a href="{{ route('division.index') }}" class="btn btn-secondary">Back</a>
+                                <a href="{{ route(Auth::user()->role.'.position.index') }}" class="btn btn-secondary">Back</a>
                             </form>
                         </div>
                     </div>

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employee;
 use App\Models\HistoryPosition;
 use App\Models\Position;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,7 +17,7 @@ class HistoryPositionController extends Controller
      */
     public function index()
     {
-        $employee = Employee::all();
+        $employee = User::all();
 
         return view('admin.historyPosition.index', with('employee'));
     }
@@ -32,7 +32,7 @@ class HistoryPositionController extends Controller
         //
     }
 
-    public function createData(Employee $employee)
+    public function createData(User $employee)
     {
         $position     = Position::pluck('name', 'id');
 
@@ -48,6 +48,7 @@ class HistoryPositionController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'employee_id'   => 'required',
             'position_id'   => 'required',
             'date_start'    => 'required'
         ]);
@@ -84,7 +85,7 @@ class HistoryPositionController extends Controller
         //
     }
 
-    public function showData(Employee $employee)
+    public function showData(User $employee)
     {
         $employee->with('HistoryPosition')->get();
 
@@ -112,6 +113,7 @@ class HistoryPositionController extends Controller
     public function update(Request $request, HistoryPosition $historyPosition)
     {
         $validator = Validator::make($request->all(), [
+            'employee_id'   => 'required',
             'position_id'   => 'required',
             'date_start'    => 'required'
         ]);

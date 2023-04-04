@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Division;
-use App\Models\Employee;
 use App\Models\HistoryDivision;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,9 +17,9 @@ class HistoryDivisionController extends Controller
      */
     public function index()
     {
-        $employee = Employee::all();
+        $employee = User::all();
 
-        return view('admin.historydivision.index', with('employee'));
+        return view('admin.historydivision.index', compact('employee'));
     }
 
     /**
@@ -32,7 +32,7 @@ class HistoryDivisionController extends Controller
         //
     }
 
-    public function createData(Employee $employee)
+    public function createData(User $employee)
     {
         $division     = Division::pluck('name', 'id');
 
@@ -48,6 +48,7 @@ class HistoryDivisionController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'employee_id'   => 'required',
             'division_id'   => 'required',
             'date_start'    => 'required'
         ]);
@@ -83,7 +84,7 @@ class HistoryDivisionController extends Controller
         //
     }
 
-    public function showData(Employee $employee)
+    public function showData(User $employee)
     {
         $employee->with('HistoryDivision')->get();
 
@@ -112,6 +113,7 @@ class HistoryDivisionController extends Controller
     public function update(Request $request, HistoryDivision $historyDivision)
     {
         $validator = Validator::make($request->all(), [
+            'employee_id'   => 'required',
             'division_id'   => 'required',
             'date_start'    => 'required'
         ]);

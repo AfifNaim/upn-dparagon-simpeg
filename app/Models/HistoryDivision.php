@@ -15,7 +15,7 @@ class HistoryDivision extends Model
 
     public function Employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id', 'id');
+        return $this->belongsTo(User::class, 'employee_id', 'employee_id');
     }
 
     public function Division()

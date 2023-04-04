@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <title>SIMPEG | @yield('title')</title>
+
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
 
@@ -13,10 +16,10 @@
               href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css"
               href="https://cdn.datatables.net/responsive/2.2.6/css/responsive.dataTables.min.css">
-    
+
     <!-- CSS Libraries -->
     @yield('plugin.css')
-    
+
     <!-- Template CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">

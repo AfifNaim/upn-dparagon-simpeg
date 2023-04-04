@@ -16,23 +16,9 @@
             <div class="row">
 
                 <div class="col-lg-12 col-md-12 col-12 col-sm-12">
-                    <div class="card " id="mycard-dimiss">
-                        <div class="card-header">
-                            <h4>Informasi Halaman</h4>
-                            <div class="card-header-action">
-                                <a data-dismiss="#mycard-dimiss" class="btn btn-icon btn-danger" href="#"><i class="fas fa-times"></i></a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            Halaman ini adalah menu Tambah Pegawai
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-12 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <form method="POST" action="{{ route('employee.store') }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route(Auth::user()->role.'.employee.store') }}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
                                     <label>Nama</label>
@@ -160,7 +146,7 @@
                                     </select>
                                 </div>
                                 <input type="submit" value="Save" class="btn note-btn btn-info btn-lg">
-                                <a href="{{ route('employee.index') }}" class="btn btn-secondary">Back</a>
+                                <a href="{{ route(Auth::user()->role.'.employee.index') }}" class="btn btn-secondary">Back</a>
                             </form>
                         </div>
                     </div>

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\Models\Employee;
+use App\Models\User;
 use App\Models\WarningLetter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use PDF;
@@ -19,20 +20,16 @@ class WarningLetterController extends Controller
      */
     public function index()
     {
-        $from           = date("Y-01-01");
-        $to             = date("Y-12-31");
-        $warningLatter  = WarningLetter::orderBy('id', 'desc')->get();
+        $warningLatter  = WarningLetter::latest()->paginate(10);
 
-        return view('warningletter.index', compact('from','to','warningLatter'));
+        return view('warningletter.index', compact('warningLatter'));
     }
 
-    public function searchLatter(Request $request)
+    public function history()
     {
-        $from               = $request->dari;
-        $to                 = $request->ke;
-        $warningLatter      = WarningLetter::orderBy('id', 'desc')->get();
+        $warningLatter  = WarningLetter::where('employee_id', Auth::user()->employee_id )->latest()->paginate(10);
 
-        return view('warningletter.index', compact('from','to','warningLatter'));
+        return view('warningletter.history', compact('warningLatter'));
     }
 
     /**
@@ -42,8 +39,8 @@ class WarningLetterController extends Controller
      */
     public function create()
     {
-        $employee = Employee::all();
-        
+        $employee = User::where('role', '!=' , "Admin")->get();
+
         return view('warningletter.create', compact('employee'));
     }
 
@@ -95,7 +92,7 @@ class WarningLetterController extends Controller
 
         $data = WarningLetter::create($dataArray);
 
-        $employee       = Employee::find($data->employee_id);
+        $employee       = User::where('employee_id', $data->employee_id)->first();
         $month          = numberToRomanRepresentation(date('m'));
         $year           = date('Y');
         $lastIncreament = substr($data->id, -3);
@@ -121,24 +118,24 @@ class WarningLetterController extends Controller
             $pdf = PDF::loadView('warningletter.letter3_pdf', $letter)->setPaper('a4', 'potrait');;
         }
 
-        $email["email"] = $employee->User->email;
+        $email["email"] = $employee->email;
         $email["title"] = 'SURAT PERINGATAN ';
         $email["body"] = 'PENERBITAN SURAT';
         $email["name"] = $employee->name;
-        
+
         try {
             Mail::send('emails.sendWarningLetter', $email, function ($message) use ($email, $pdf, $employee) {
                 $message->to($email["email"], $email["email"])
                     ->subject($email["title"])->attachData($pdf->output(), "Surat-Peringatan-" . $employee->name . ".pdf");
             });
 
-            return redirect()->route('warningletter.index')->with('success','Data Berhasil di Kirim');
+            return redirect()->route(Auth::user()->role.'.warningletter.index')->with('success','Data Berhasil di Kirim');
         } catch (\Exception $ex) {
-            
+
             $destoryletter = WarningLetter::find($data->id);
             $destoryletter->delete();
             return $ex;
-            return redirect()->route('warningletter.index')->with('error','Data Gagal di Kirim');
+            return redirect()->route(Auth::user()->role.'.warningletter.index')->with('error','Data Gagal di Kirim');
         }
     }
 
@@ -148,9 +145,13 @@ class WarningLetterController extends Controller
      * @param  \App\Models\WarningLetter  $warningLetter
      * @return \Illuminate\Http\Response
      */
-    public function show(WarningLetter $warningLetter)
+    public function show(WarningLetter $warningletter)
     {
+        $warning        = $warningletter->warning;
+        $employee_id    = $warningletter->employee_id;
+        $level          = $warningletter->level;
 
+        
         function numberToRomanRepresentation($number)
         {
             $map = array('M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400, 'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40, 'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1);
@@ -167,22 +168,17 @@ class WarningLetterController extends Controller
             return $returnValue;
         }
 
-        $warning        = $warningLetter->warning;
-        $employee_id    = $warningLetter->employee_id;
-        $level          = $warningLetter->level;
-
-
-        $employee       = Employee::find($employee_id);
-        $month          = numberToRomanRepresentation(date('m', strtotime($warningLetter->date)));
-        $year           = date('Y', strtotime($warningLetter->tanggal));
-        $lastIncreament = substr($warningLetter->id, -3);
+        $employee       = User::where('employee_id', $employee_id)->first();
+        $month          = numberToRomanRepresentation(date('m', strtotime($warningletter->date)));
+        $year           = date('Y', strtotime($warningletter->date));
+        $lastIncreament = substr($warningletter->id, -3);
         $letter_id      = str_pad($lastIncreament, 3, 0, STR_PAD_LEFT);
         $company        = Company::orderBy('id', 'desc')->first();
 
         $data = [
             'employee'  => $employee,
             'warning'   => $warning,
-            'date'      => date('Y-m-d', strtotime($warningLetter->date)),
+            'date'      => date('Y-m-d', strtotime($warningletter->date)),
             'month'     => $month,
             'year'      => $year,
             'letter_id' => $letter_id,
@@ -191,11 +187,11 @@ class WarningLetterController extends Controller
         ];
 
         if ($level == 'I') {
-            $pdf = PDF::loadView('admin.warningletter.letter_pdf', $data)->setPaper('a4', 'potrait');;
+            $pdf = PDF::loadView('warningletter.letter_pdf', $data)->setPaper('a4', 'potrait');;
         } elseif ($level == 'II') {
-            $pdf = PDF::loadView('admin.warningletter.letter2_pdf', $data)->setPaper('a4', 'potrait');;
+            $pdf = PDF::loadView('warningletter.letter2_pdf', $data)->setPaper('a4', 'potrait');;
         } elseif ($level == 'III') {
-            $pdf = PDF::loadView('admin.warningletter.letter3_pdf', $data)->setPaper('a4', 'potrait');;
+            $pdf = PDF::loadView('warningletter.letter3_pdf', $data)->setPaper('a4', 'potrait');;
         }
 
         return $pdf->stream('pdf_file.pdf', array('Attachment' => 0));
@@ -230,8 +226,11 @@ class WarningLetterController extends Controller
      * @param  \App\Models\WarningLetter  $warningLetter
      * @return \Illuminate\Http\Response
      */
-    public function destroy(WarningLetter $warningLetter)
+    public function destroy(WarningLetter $warningletter)
     {
-        //
+        $warningletter->delete();
+
+        return redirect()->route(Auth::user()->role.'.warningletter.index')->with('success','Data Berhasil di Dihapus');
     }
+
 }

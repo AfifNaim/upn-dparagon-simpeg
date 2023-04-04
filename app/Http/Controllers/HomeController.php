@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -11,32 +12,16 @@ class HomeController extends Controller
     {
         return view('landingpage');
     }
-    
+
     public function index()
     {
-        if (auth()->user()->role == 'Admin')
-            return self::dashboardAdmin();
+        if (auth()->user()->role == 'Staff')
+            return redirect('/Staff');
         elseif (auth()->user()->role == 'HRD')
-            return self::dashboardHRD();
-        elseif (auth()->user()->role == 'Staff')
-            return self::dashboardStaff();
+            return redirect('/HRD');
+        elseif (auth()->user()->role == 'Admin')
+            return redirect('/Admin');
         else
             abort(403);
     }
-
-    public function dashboardAdmin()
-    {
-        return view('dashboard.admin');
-    }
-
-    public function dashboardHRD()
-    {
-        return view('dashboard.admin');
-    }
-
-    public function dashboardStaff()
-    {
-        return view('dashboard.admin');
-    }
-
 }

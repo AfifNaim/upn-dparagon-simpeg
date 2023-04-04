@@ -23,8 +23,8 @@ class CreateWarningLettersTable extends Migration
 
             $table->index('employee_id');
             $table->foreign('employee_id')
-                ->references('id')
-                ->on('employees')
+                ->references('employee_id')
+                ->on('users')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

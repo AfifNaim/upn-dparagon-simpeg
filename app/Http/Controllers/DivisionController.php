@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Division;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class DivisionController extends Controller
@@ -15,9 +16,9 @@ class DivisionController extends Controller
      */
     public function index()
     {
-        $division = Division::all();
+        $division = Division::paginate(10);
 
-        return view('admin.division.index', compact('division'));
+        return view('division.index', compact('division'));
     }
 
     /**
@@ -27,7 +28,7 @@ class DivisionController extends Controller
      */
     public function create()
     {
-        return view('admin.division.create');
+        return view('division.create');
     }
 
     /**
@@ -57,7 +58,7 @@ class DivisionController extends Controller
 
         $data = Division::create($arrayData);
 
-        return redirect()->route('division.index')->with('success','Data Berhasil di Tambah');
+        return redirect()->route(Auth::user()->role.'.division.index')->with('success','Data Berhasil di Tambah');
     }
 
     /**
@@ -68,7 +69,7 @@ class DivisionController extends Controller
      */
     public function show(Division $division)
     {
-        return view('admin.division.show', compact('division'));
+        return view('division.show', compact('division'));
     }
 
     /**
@@ -79,7 +80,7 @@ class DivisionController extends Controller
      */
     public function edit(Division $division)
     {
-        return view('admin.division.edit', compact('division'));
+        return view('division.edit', compact('division'));
     }
 
     /**
@@ -110,7 +111,7 @@ class DivisionController extends Controller
 
         $division->update($saveData);
 
-        return redirect()->route('division.index')->with('success','Data Berhasil di Ubah');
+        return redirect()->route(Auth::user()->role.'.division.index')->with('success','Data Berhasil di Ubah');
     }
 
     /**
@@ -123,6 +124,6 @@ class DivisionController extends Controller
     {
         $division->delete();
 
-        return redirect()->route('division.index')->with('error','Data Berhasil di Hapus');
+        return redirect()->route(Auth::user()->role.'.division.index')->with('error','Data Berhasil di Hapus');
     }
 }

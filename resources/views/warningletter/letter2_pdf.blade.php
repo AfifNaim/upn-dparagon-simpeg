@@ -196,7 +196,7 @@
                 <p>
                     Mengingat yang bersangkutan sudah pernah mendapatkan Surat Peringatan I, untuk itu apabila yang
                     bersangkutan tidak segera mengindahkan Surat Peringatan II ini dengan memperbaiki kinerjanya, <b>
-                        maka Refactory Yogyakarta akan segera mengeluarkan Surat Peringatan III. </b>
+                        maka {{ $company->name}} akan segera mengeluarkan Surat Peringatan III. </b>
                 </p>
             </div>
         </div>

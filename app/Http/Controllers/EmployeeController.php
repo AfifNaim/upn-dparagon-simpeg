@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Division;
-use App\Models\Employee;
 use App\Models\HistoryDivision;
 use App\Models\HistoryPosition;
 use App\Models\Position;
@@ -12,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
@@ -24,10 +23,17 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $user       = User::all();
-        $employee   = Employee::all();
+        if(Auth::user()->role != "Admin")
+        {
+            $employee   = User::where('role', '!=' ,"Admin")->paginate(10);
 
-        return view('user.index', compact('user','employee'));
+            return view('user.index', compact('employee'));
+        } else {
+            $employee   = User::paginate(10);
+
+            return view('user.index', compact('employee'));
+        }
+
     }
 
     /**
@@ -50,11 +56,11 @@ class EmployeeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         $validator = Validator::make($request->all(), [
             'role'              => 'required',
             'email'             => 'required|unique:users,email',
-            'nik'               => 'required|unique:employees,nik',
+            'nik'               => 'required|unique:users,nik',
             'name'              => 'required|unique:users,name',
             'gender'            => 'required',
             'religion'          => 'required',
@@ -78,11 +84,8 @@ class EmployeeController extends Controller
                     ->withErrors($validator->errors())
                     ->with('error',"Gagal menyimpan data. Cek kembali data inputan Anda.");
         }
-        
-        DB::beginTransaction();
-        try {
 
-        $id                 = IdGenerator::generate(['table' => 'employees', 'length' => 8, 'prefix' => date('ym')]);
+        $id                 = IdGenerator::generate(['table' => 'users', 'length' => 8, 'prefix' => date('ym')]);
         $password           = bcrypt("$request->nik");
 
         $historyPosition    = HistoryPosition::where('employee_id', $id)
@@ -94,7 +97,10 @@ class EmployeeController extends Controller
             ->count();
 
         $employeeArray = array(
-            'id'                => $id,
+            'employee_id'       => $id,
+            'email'             => $request->email,
+            'password'          => bcrypt($request->nik),
+            'role'              => $request->role,
             'nik'               => $request->nik,
             'name'              => $request->name,
             'gender'            => $request->gender,
@@ -111,17 +117,7 @@ class EmployeeController extends Controller
             'date_in'           => $request->date_in
         );
 
-        $employee = Employee::create($employeeArray);
-
-        $userArray = array(
-            'email'            => $request->email,
-            'name'             => $request->name,
-            'password'         => $password,
-            'role'             => $request->role,
-            'employee_id'      => $id
-        );
-
-        $user = User::create($userArray);
+        $employee = User::create($employeeArray);
 
         if ($historyPosition == 0) {
 
@@ -131,7 +127,7 @@ class EmployeeController extends Controller
                 'date_start'    => $request->date_in
             ]);
         }
-        if ($historyPosition == 0) {
+        if ($historyDivision == 0) {
 
             HistoryDivision::create([
                 'employee_id'   => $id,
@@ -140,14 +136,7 @@ class EmployeeController extends Controller
             ]);
         }
 
-        DB::commit();
-        return redirect()->route('employee.index')->with('success', 'Data Berhasil di Tambah');
-    
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            throw $th;
-            return redirect()->route('employee.index')->with('error', 'Data Gagal di Tambah');
-        }
+        return redirect()->route(Auth::user()->role.'.employee.index')->with('success', 'Data Berhasil di Tambah');
     }
 
     /**
@@ -157,7 +146,7 @@ class EmployeeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(User $employee)
-    {   
+    {
         $historyPosition = HistoryPosition::where('employee_id', $employee->employee_id)
             ->orderBy('id')
             ->get();
@@ -178,7 +167,6 @@ class EmployeeController extends Controller
     {
         $position   = Position::all();
         $division   = Division::all();
-        $manager    = Employee::all();
 
         return view('user.edit', compact('employee','position','division'));
     }
@@ -190,186 +178,80 @@ class EmployeeController extends Controller
      * @param  \App\Models\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $employee)
+    public function update(Request $request, User $employee)
     {
-        $user = User::find($employee);
-
-        $historyPosition = HistoryPosition::where('employee_id', $employee->Employee->id)
+        $historyPosition = HistoryPosition::where('employee_id', $employee->employee_id)
             ->where('position_id', $request->position_id)
             ->count();
 
-        $historyDivision = HistoryDivision::where('employee_id', $employee->Employee->id)
+        $historyDivision = HistoryDivision::where('employee_id', $employee->employee_id)
             ->where('division_id', $request->devision_id)
             ->count();
 
-        if ($request->hasFile('image')) {
+        $validator = Validator::make($request->all(), [
+            'role'              => 'required',
+            'nik'               => 'required',
+            'name'              => 'required',
+            'gender'            => 'required',
+            'religion'          => 'required',
+            'birth_place'       => 'required',
+            'birth_date'        => 'required',
+            'address'           => 'required',
+            'residence_address' => 'required',
+            'status'            => 'required',
+            'child'             => 'required',
+            'phone'             => 'required',
+            'position_id'       => 'required',
+            'division_id'       => 'required',
+            'date_in'           => 'required'
+        ]);
 
-            $extension  = $request->file('image')->extension();
-            $imgname    = $request->nik . '_' . date('dmyHi') . '.' . $extension;
-            $validator = Validator::make($request->all(), [
-                'role'              => 'required',
-                'nik'               => 'required|unique:employees,nik,'.$employee->nik,
-                'name'              => 'required|unique:users,name,'.$employee->name,
-                'gender'            => 'required',
-                'religion'          => 'required',
-                'birth_place'       => 'required',
-                'birth_date'        => 'required',
-                'address'           => 'required',
-                'residence_address' => 'required',
-                'status'            => 'required',
-                'child'             => 'required',
-                'phone'             => 'required',
-                'position_id'       => 'required',
-                'division_id'       => 'required',
-                'date_in'           => 'required',
-                'image'             => 'required|mimes:jpeg,png,jpg,gif,svg|file|max:5000'
-            ]);
-
-            if ($validator->fails()) {
-                return $request->ajax()
-                    ? response()->json(['errors'  => $validator->errors()], 400)
-                    : back()
-                        ->withInput()
-                        ->withErrors($validator->errors())
-                        ->with('error',"Gagal menyimpan data. Cek kembali data inputan Anda.");
-            }
-
-                DB::beginTransaction();
-                try {
-
-                    $path = Storage::putFileAs('public/images', $request->file('image'), $imgname);
-
-                    $employeeArray = array(
-                        'nik'               => $request->nik,
-                        'name'              => $request->name,
-                        'gender'            => $request->gender,
-                        'religion'          => $request->religion,
-                        'birth_place'       => $request->birth_place,
-                        'birth_date'        => $request->birth_date,
-                        'address'           => $request->address,
-                        'residence_address' => $request->residence_address,
-                        'status'            => $request->status,
-                        'child'             => $request->child,
-                        'phone'             => $request->phone,
-                        'position_id'       => $request->position_id,
-                        'division_id'       => $request->division_id,
-                        'date_in'           => $request->date_in,
-                        'path'              => $path
-                    );
-            
-                    $employee->update($employeeArray);
-            
-                    $userArray = array(
-                        'email'            => $request->email,
-                        'name'             => $request->name,
-                        'role'             => $request->role
-                    );
-            
-                    $user->update($userArray);
-
-                    if ($historyPosition == 0) {
-
-                        HistoryPosition::create([
-                            'employee_id'   => $employee->id,
-                            'position_id'   => $request->position_id,
-                            'date_start'    => date("Y-m-d"),
-                        ]);
-                    }
-                    if ($historyDivision == 0) {
-
-                        HistoryPosition::create([
-                            'employee_id'   => $employee->id,
-                            'division_id'   => $request->division_id,
-                            'date_start'    => date("Y-m-d"),
-                        ]);
-                    }
-
-                    DB::commit();
-                    return redirect()->route('admin.employee.index')->with('success', 'Data Berhasil di Ubah');
-                
-                } catch (\Throwable $th) {
-                    DB::rollBack();
-                    throw $th;
-                    return redirect()->route('admin.employee.index')->with('error', 'Data Gagal di Ubah');
-                }
-
-            } else {
-
-                $validator = Validator::make($request->all(), [
-                    'role'              => 'required',
-                    'nik'               => 'required',
-                    'name'              => 'required',
-                    'gender'            => 'required',
-                    'religion'          => 'required',
-                    'birth_place'       => 'required',
-                    'birth_date'        => 'required',
-                    'address'           => 'required',
-                    'residence_address' => 'required',
-                    'status'            => 'required',
-                    'child'             => 'required',
-                    'phone'             => 'required',
-                    'position_id'       => 'required',
-                    'division_id'       => 'required',
-                    'date_in'           => 'required',
-                    'image'             => 'required|mimes:jpeg,png,jpg,gif,svg|file|max:5000'
-                ]);
-
-                DB::beginTransaction();
-                try {
-                    $employeeArray = array(
-                        'nik'               => $request->nik,
-                        'name'              => $request->name,
-                        'gender'            => $request->gender,
-                        'religion'          => $request->religion,
-                        'birth_place'       => $request->birth_place,
-                        'birth_date'        => $request->birth_date,
-                        'address'           => $request->address,
-                        'residence_address' => $request->residence_address,
-                        'status'            => $request->status,
-                        'child'             => $request->child,
-                        'phone'             => $request->phone,
-                        'position_id'       => $request->position_id,
-                        'division_id'       => $request->division_id,
-                        'date_in'           => $request->date_in,
-                    );
-            
-                    $employee->update($employeeArray);
-            
-                    $userArray = array(
-                        'email'            => $request->email,
-                        'name'             => $request->name,
-                        'role'             => $request->role
-                    );
-            
-                    $user->update($userArray);
-
-                    if ($historyPosition == 0) {
-
-                        HistoryPosition::create([
-                            'employee_id'   => $employee->id,
-                            'position_id'   => $request->position_id,
-                            'date_start'    => date("Y-m-d"),
-                        ]);
-                    }
-                    if ($historyDivision == 0) {
-
-                        HistoryPosition::create([
-                            'employee_id'   => $employee->id,
-                            'division_id'   => $request->division_id,
-                            'date_start'    => date("Y-m-d"),
-                        ]);
-                    }
-
-                    DB::commit();
-                    return redirect()->route('admin.employee.index')->with('success', 'Data Berhasil di Ubah');
-                
-                } catch (\Throwable $th) {
-                    DB::rollBack();
-                    throw $th;
-                    return redirect()->route('admin.employee.index')->with('error', 'Data Gagal di Ubah');
-                }
-
+        if ($validator->fails()) {
+            return $request->ajax()
+                ? response()->json(['errors'  => $validator->errors()], 400)
+                : back()
+                    ->withInput()
+                    ->withErrors($validator->errors())
+                    ->with('error',"Gagal menyimpan data. Cek kembali data inputan Anda.");
         }
+
+            $employeeArray = array(
+                'role'             => $request->role,
+                'nik'               => $request->nik,
+                'name'              => $request->name,
+                'gender'            => $request->gender,
+                'religion'          => $request->religion,
+                'birth_place'       => $request->birth_place,
+                'birth_date'        => $request->birth_date,
+                'address'           => $request->address,
+                'residence_address' => $request->residence_address,
+                'status'            => $request->status,
+                'child'             => $request->child,
+                'phone'             => $request->phone,
+                'position_id'       => $request->position_id,
+                'division_id'       => $request->division_id,
+                'date_in'           => $request->date_in,
+            );
+
+            $employee->update($employeeArray);
+
+            if ($historyPosition == 0) {
+
+                HistoryPosition::create([
+                    'employee_id'   => $employee->employee_id,
+                    'position_id'   => $request->position_id,
+                    'date_start'    => date("Y-m-d"),
+                ]);
+            }
+            if ($historyDivision == 0) {
+
+                HistoryDivision::create([
+                    'employee_id'   => $employee->employee_id,
+                    'division_id'   => $request->division_id,
+                    'date_start'    => date("Y-m-d"),
+                ]);
+            }
+        return redirect()->route(Auth::user()->role.'.employee.index')->with('success', 'Data Berhasil di Ubah');
     }
 
     /**
@@ -378,31 +260,71 @@ class EmployeeController extends Controller
      * @param  \App\Models\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Employee $employee)
+    public function destroy(User $employee)
     {
         $employee->delete();
 
-        return redirect()->route('admin.employee.index')->with('error', 'Data Berhasil di Hapus');
+        return redirect()->route(Auth::user()->role.'.employee.index')->with('error', 'Data Berhasil di Hapus');
     }
 
-    public function trash()
+    public function profile()
     {
-        $employee = Employee::onlyTrashed()->get();
+        $employee = Auth::user();
 
-        return view('admin.employee.resigned', compact('emoloyee'));
+        return view('user.profile', compact('employee'));
     }
 
-    public function restore(Employee $employee)
+    public function saveProfile(Request $request, $id)
     {
-        $employee->restore();
+        $validator = Validator::make($request->all(), [
+            'nik'               => 'required',
+            'name'              => 'required',
+            'gender'            => 'required',
+            'religion'          => 'required',
+            'birth_place'       => 'required',
+            'birth_date'        => 'required',
+            'address'           => 'required',
+            'residence_address' => 'required',
+            'status'            => 'required',
+            'child'             => 'required',
+            'phone'             => 'required',
+        ]);
 
-        return redirect()->route('admin.employee.trash')->with('success', 'Data Berhasil di Ubah');
+        if ($validator->fails()) {
+            return $request->ajax()
+                ? response()->json(['errors'  => $validator->errors()], 400)
+                : back()
+                    ->withInput()
+                    ->withErrors($validator->errors())
+                    ->with('error',"Gagal menyimpan data. Cek kembali data inputan Anda.");
+        }
+
+        $employee = User::find($id);
+
+        $employeeArray = array(
+            'nik'               => $request->nik,
+            'name'              => $request->name,
+            'gender'            => $request->gender,
+            'religion'          => $request->religion,
+            'birth_place'       => $request->birth_place,
+            'birth_date'        => $request->birth_date,
+            'address'           => $request->address,
+            'residence_address' => $request->residence_address,
+            'status'            => $request->status,
+            'child'             => $request->child,
+            'phone'             => $request->phone,
+        );
+
+            $employee->update($employeeArray);
+
+        return view('user.profile', compact('employee'));
     }
 
-    public function destroyPermanent(Employee $employee)
+    public function reset(User $user)
     {
-        $employee->forceDelete();
+        $user->password = bcrypt('123456');
+        $user->save();
 
-        return redirect()->route('admin.employee.trash')->with('error', 'Data Berhasil di Hapus');
+        return redirect()->route(Auth::user()->role.'.employee.index')->with('success', 'Password Berhasil di Reset');
     }
 }
